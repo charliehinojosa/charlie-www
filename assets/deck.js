@@ -39,27 +39,91 @@
 
   /* ---------- engines ---------- */
 
+  /*
+   * Main-thread copy of turntable-worklet.js's processor, for a ScriptProcessorNode.
+   * Used only when AudioWorklet can't load (old browsers, sandboxed frames), so
+   * scratching still moves the real track. Same playhead maths, line for line.
+   */
+  class TurntableCore {
+    constructor(outRate, post) {
+      Object.assign(this, { outRate, post, ch: null, len: 0, srcRate: outRate, pos: 0, rate: 0, motor: 0, hand: null, ended: false, snap: false, dc: [0, 0, 0, 0], sinceReport: 0 });
+    }
+    handle(m) {
+      if (m.type === 'buffer') { this.ch = m.channels; this.len = m.channels[0].length; this.srcRate = m.sampleRate; this.pos = 0; this.rate = 0; this.ended = false; }
+      else if (m.type === 'motor') { this.motor = m.on ? 1 : 0; if (m.on) { this.ended = false; this.snap = false; } }
+      else if (m.type === 'seek') { this.pos = Math.max(0, Math.min(this.len - 1, m.seconds * this.srcRate)); this.ended = false; }
+      else if (m.type === 'scratch') { if (m.rate === null && this.hand !== null && !this.motor) this.snap = true; this.hand = m.rate; }
+    }
+    render(outL, outR) {
+      const frames = outL.length;
+      if (!this.ch) { outL.fill(0); outR.fill(0); return; }
+      const sr = this.outRate, ratio = this.srcRate / sr;
+      const target = this.hand !== null ? this.hand : this.motor;
+      const tau = this.hand !== null || this.snap ? 0.01 : this.motor ? 0.12 : 0.06;
+      const k = 1 - Math.exp(-1 / (tau * sr));
+      const dc = this.dc, last = this.len - 1, L = this.ch[0], R = this.ch[1] || this.ch[0];
+      const herm = (d, i, f) => {
+        const n = d.length, x0 = d[i > 0 ? i - 1 : 0], x1 = d[i], x2 = d[i + 1 < n ? i + 1 : n - 1], x3 = d[i + 2 < n ? i + 2 : n - 1];
+        const c1 = 0.5 * (x2 - x0), c2 = x0 - 2.5 * x1 + 2 * x2 - 0.5 * x3, c3 = 0.5 * (x3 - x0) + 1.5 * (x1 - x2);
+        return ((c3 * f + c2) * f + c1) * f + x1;
+      };
+      for (let f = 0; f < frames; f++) {
+        this.rate += (target - this.rate) * k;
+        if (target === 0 && Math.abs(this.rate) < 0.02) this.rate = 0;
+        let p = this.pos + this.rate * ratio;
+        if (p < 0) p = 0;
+        if (p >= last) { p = last; if (this.hand === null && this.motor && !this.ended) { this.ended = true; this.motor = 0; this.post({ type: 'ended' }); } }
+        this.pos = p;
+        const i = p | 0, fr = p - i;
+        const l = herm(L, i, fr), r = R === L ? l : herm(R, i, fr);
+        const yl = l - dc[0] + 0.999 * dc[1]; dc[0] = l; dc[1] = yl;
+        const yr = r - dc[2] + 0.999 * dc[3]; dc[2] = r; dc[3] = yr;
+        outL[f] = yl; outR[f] = yr;
+      }
+      if (this.snap && Math.abs(this.rate) < 1e-4) this.snap = false;
+      this.sinceReport += frames;
+      if (this.sinceReport >= sr / 30) { this.sinceReport = 0; this.post({ type: 'pos', seconds: this.pos / this.srcRate, rate: this.rate }); }
+    }
+  }
+
   class TurntableEngine {
-    static supported() { return !!AC && typeof AudioWorkletNode !== 'undefined'; }
-    constructor(ev) { Object.assign(this, { ev, ctx: null, node: null, ready: null, loadedUrl: null, token: 0, motor: false, duration: 0, pos: 0, rate: 0, posAt: 0, loaded: false }); }
+    static supported() { return !!AC; }
+    constructor(ev) { Object.assign(this, { ev, ctx: null, node: null, ready: null, loadedUrl: null, token: 0, motor: false, duration: 0, pos: 0, rate: 0, posAt: 0, loaded: false, mode: null }); }
     get canScratch() { return this.loaded; }
+    onMessage(m) {
+      if (m.type === 'pos') { this.pos = m.seconds; this.rate = m.rate; this.posAt = this.ctx.currentTime; }
+      else if (m.type === 'ended') { this.motor = false; this.ev.onState('ended'); this.ev.onEnded(); }
+    }
+    /* AudioWorklet from its URL; else the same file through a blob: URL (frames that refuse
+       cross-origin module loads); else the ScriptProcessor copy above. */
+    loadWorklet() {
+      const wk = this.ctx.audioWorklet;
+      if (!wk || typeof AudioWorkletNode === 'undefined' || window.__deckForceScript) return Promise.reject(new Error('no worklet'));
+      return wk.addModule(WORKLET_URL).catch(() =>
+        fetch(WORKLET_URL).then((r) => r.text()).then((code) => wk.addModule(URL.createObjectURL(new Blob([code], { type: 'text/javascript' })))));
+    }
     ensure() {
       if (!this.ctx) {
         this.ctx = new AC({ latencyHint: 'interactive' });
-        this.ready = this.ctx.audioWorklet.addModule(WORKLET_URL).then(() => {
+        this.ready = this.loadWorklet().then(() => {
           const node = new AudioWorkletNode(this.ctx, 'turntable', { numberOfInputs: 0, outputChannelCount: [2] });
           node.connect(this.ctx.destination);
-          node.port.onmessage = ({ data: m }) => {
-            if (m.type === 'pos') { this.pos = m.seconds; this.rate = m.rate; this.posAt = this.ctx.currentTime; }
-            else if (m.type === 'ended') { this.motor = false; this.ev.onState('ended'); this.ev.onEnded(); }
-          };
-          this.node = node;
+          node.port.onmessage = ({ data }) => this.onMessage(data);
+          this.node = { post: (msg, transfer) => node.port.postMessage(msg, transfer) };
+          this.mode = 'worklet';
+        }).catch(() => {
+          const core = new TurntableCore(this.ctx.sampleRate, (m) => this.onMessage(m));
+          const sp = this.ctx.createScriptProcessor(2048, 0, 2);
+          sp.onaudioprocess = (e) => core.render(e.outputBuffer.getChannelData(0), e.outputBuffer.getChannelData(1));
+          sp.connect(this.ctx.destination);
+          this.node = { post: (msg) => core.handle(msg), keep: sp };
+          this.mode = 'script';
         });
       }
       if (this.ctx.state === 'suspended') this.ctx.resume();
       return this.ready;
     }
-    send(msg, transfer = []) { if (this.node) this.node.port.postMessage(msg, transfer); }
+    send(msg, transfer = []) { if (this.node) this.node.post(msg, transfer); }
     load(url, autoplay) {
       const ready = this.ensure();
       this.motor = autoplay;

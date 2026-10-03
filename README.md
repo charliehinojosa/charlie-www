@@ -1,7 +1,18 @@
 # charlie-www
 Charlie Hinojosa Official Site
 
-## Concept v3 (current `index.html`)
+## Music (current `index.html`)
+
+- The hero's flying images are now **record sleeves**: Charlie's albums *Scored, Vol. 1* and *COMING HOME (Odyssey)*, plus RAÍZ and two Sightbox Records singles. On hover a sleeve sharpens and slides its disc out; clicking drops that record onto the deck.
+- **On the deck** is the Sightbox Records picture-disc turntable, ported from `sightbox/records-www` to plain JS (`assets/deck.js`):
+  - `TurntableEngine` ← `lib/playback/turntable.ts`, with `assets/turntable-worklet.js` copied verbatim. Dragging the record scratches the real track (100°/s = 1×; still = silent; backwards plays in reverse).
+  - `ElementEngine` ← `lib/playback/audio.ts` is the fallback where AudioWorklet is missing.
+  - Record spin, pointer/keyboard scratching and the pink-noise hiss ← `components/Record.tsx`; waveform bars ← `components/Waveform.tsx`.
+- Audio: the six RAÍZ "radio" samples, encoded to 160 kbps MP3 in `assets/audio/` from the WAVs in records-www. Charlie's own albums have no audio files there yet, so they load onto the platter with a Spotify link. Drop MP3s in `assets/audio/` and add a `src` in `TRACKS` (top of `assets/deck.js`) to make them playable.
+- Covers in `assets/covers/` come from records-www.
+- The deck needs to be served over http(s) (the worklet and MP3s are fetched); opening `index.html` from disk won't load audio.
+
+## Concept v3
 
 Builds on v2 with interaction and real biography:
 

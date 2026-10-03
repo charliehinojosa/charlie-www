@@ -1,7 +1,20 @@
 # charlie-www
 Charlie Hinojosa Official Site
 
-## Concept v2 (current `index.html`)
+## Concept v3 (current `index.html`)
+
+Builds on v2 with interaction and real biography:
+
+- Hero wordmark now reads **CHARLIE** (the footer carries *hinojosa.*).
+- The blurred flying posters snap into focus on hover.
+- A white capture LED blinks on the corner of the Ray-Ban Meta glasses. Clicking it zooms into the lens and opens a POV dialog (`assets/pov-meta.jpg`) with a "Hey Meta, record" voice prompt and a live REC timer.
+- The inline graphics in the Meet Charlie paragraph open detail cards on hover / keyboard focus.
+- *The Work* is now a horizontal **timeline** (1997 to now): career above the line (Cisco 1999, Intel 2008, Sightbox Studios 2011 to present), life and passion below. On desktop it pins and scrolls sideways with the page; on phones and with reduced motion it's a native swipe.
+- Socials point to @charliehinojosa.
+
+Previous versions: `v2.html`, `v1.html`.
+
+## Concept v2 (`v2.html`)
 
 Pushes v1 further with three new references:
 

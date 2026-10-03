@@ -8,9 +8,8 @@
 <link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  /* Concept v2: Posters 1 + 4, pushed with the Kinetic (motion blur, ember accent,
-     staggered cards, cropped lowercase wordmark), Onmark (pill UI, two-tone copy,
-     inline image pills, scroll badge) and Wobble (word tunnel, halftone, flying posters) refs. */
+  /* Concept v3: v2 (Posters 1 + 4 x Kinetic / Onmark / Wobble) plus interactions:
+     focus-on-hover posters, Meta glasses POV, inline popovers, horizontal life timeline. */
   @font-face { font-family: "Anton"; font-weight: 400; font-display: swap; src: url(assets/fonts/anton-latin-400-normal.woff2) format("woff2"); }
   @font-face { font-family: "Archivo"; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; src: url(assets/fonts/archivo-latin-wdth-normal.woff2) format("woff2-variations"); }
 
@@ -19,26 +18,28 @@
     --card: #dcdbd7;
     --tunnel: #f3f2ef;
     --ink: #0f0f0e;
-    --mute: #8d8b86;      /* two-tone copy, large text only */
-    --ink-2: #4a4945;     /* small secondary text */
-    --ember: #f2541b;     /* from the "11" poster, pushed toward Kinetic's red-orange */
+    --mute: #8d8b86;
+    --ink-2: #4a4945;
+    --ember: #f2541b;
     --rule: rgba(15, 15, 14, .14);
     --display: "Anton", Impact, sans-serif;
     --text: "Archivo", "Helvetica Neue", Helvetica, sans-serif;
     --g: clamp(16px, 2.6vw, 36px);
     --r: clamp(18px, 2vw, 28px);
+    --ease: cubic-bezier(.2, .7, .2, 1);
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { margin: 0; overflow-x: clip; background: var(--page); color: var(--ink); font-family: var(--text); -webkit-font-smoothing: antialiased; }
   a { color: inherit; }
   img { display: block; max-width: 100%; height: auto; }
+  button { font: inherit; color: inherit; }
   .micro { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; }
   .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
   .mute { color: var(--mute); }
   .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 14px rgba(242, 84, 27, .7); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* Pills & buttons (Onmark / Kinetic) */
   .pill { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 20px; border-radius: 999px; background: var(--ink); color: #f6f5f2; text-decoration: none; font-weight: 600; }
   .pill:hover { background: #2b2b29; }
   .pill.light { background: #f6f5f2; color: var(--ink); }
@@ -50,32 +51,45 @@
 
   /* ---------- HERO CARD ---------- */
   .hero { position: relative; margin: 8px; height: calc(100svh - 16px); min-height: 680px; max-height: 980px; border-radius: var(--r); overflow: hidden; background: var(--card); isolation: isolate; }
+  .stage { position: absolute; inset: 0; transition: transform .7s var(--ease), filter .7s var(--ease); transform-origin: var(--ox, 50%) var(--oy, 20%); }
+  .hero.warp .stage { transform: scale(7); filter: blur(6px) brightness(1.4); }
   .halftone { position: absolute; inset: 0; z-index: 0; background: radial-gradient(rgba(15,15,14,.16) 1px, transparent 1.3px) 0 0 / 6px 6px; -webkit-mask: radial-gradient(ellipse at 50% 55%, transparent 25%, #000 85%); mask: radial-gradient(ellipse at 50% 55%, transparent 25%, #000 85%); }
 
-  /* Wobble tunnel: BUILDER repeated, folded into a ceiling and a floor */
   .tunnel { position: absolute; inset: 0; z-index: 1; perspective: 520px; pointer-events: none; }
   .tunnel .plane { position: absolute; left: -30%; right: -30%; height: 52%; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--display); font-size: clamp(64px, 9vw, 150px); line-height: .9; color: var(--tunnel); white-space: nowrap; text-align: center; letter-spacing: .01em; }
   .tunnel .ceil { top: -6%; transform-origin: 50% 100%; transform: rotateX(-58deg); }
   .tunnel .floor { bottom: -6%; transform-origin: 50% 0; transform: rotateX(58deg); }
   .tunnel .plane span:nth-child(odd) { color: transparent; -webkit-text-stroke: 1.5px #f6f5f2; }
 
-  .wordmark { position: absolute; z-index: 2; left: 0; right: 0; top: 47%; margin: 0; text-align: center; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 22.6vw; line-height: .8; letter-spacing: -.004em; transform: translateY(-50%) scaleY(1.18);
+  .wordmark { position: absolute; z-index: 2; left: 0; right: 0; top: 47%; margin: 0; text-align: center; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 26vw; line-height: .8; letter-spacing: .005em; transform: translateY(-50%) scaleY(1.12);
     color: var(--ink);
     background: linear-gradient(rgba(15,15,14,.62), rgba(15,15,14,.82)), url(assets/builder-blur.jpg) 50% 50% / cover;
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
-  /* Flying posters */
-  .fly { position: absolute; z-index: 3; width: clamp(110px, 12vw, 190px); border-radius: 10px; box-shadow: 0 30px 50px -20px rgba(0,0,0,.35); }
+  /* Flying posters: blurred in flight, snap into focus on hover */
+  .fly { position: absolute; z-index: 3; width: clamp(110px, 12vw, 190px); border-radius: 10px; box-shadow: 0 30px 50px -20px rgba(0,0,0,.35); cursor: zoom-in;
+    transition: filter .45s var(--ease), transform .45s var(--ease), box-shadow .45s var(--ease); }
   .fly.a { left: 5%; top: 33%; transform: rotate(-16deg) skewY(4deg); filter: blur(2px); }
   .fly.b { right: 5%; top: 18%; transform: rotate(13deg); filter: blur(3.5px); width: clamp(90px, 9vw, 150px); }
   .fly.c { right: 11%; bottom: 13%; transform: rotate(-8deg); filter: blur(1.2px); width: clamp(80px, 8vw, 130px); }
+  .fly:hover { z-index: 8; filter: none; transform: rotate(-3deg) scale(1.55); box-shadow: 0 40px 70px -24px rgba(0,0,0,.5); }
+  .ghost { transition: opacity .4s; }
 
-  /* Kinetic: motion ghost + ember streak behind the figure */
-  .streak { position: absolute; z-index: 3; left: 24%; bottom: 24%; width: 30%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,130,70,.95), rgba(242,84,27,.55) 50%, rgba(242,84,27,0)); filter: blur(14px); opacity: .9; }
-  .ghost { position: absolute; z-index: 3; bottom: 0; left: 50%; height: 72%; width: auto; max-width: none; transform: translateX(-74%); opacity: .45; }
-  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; width: auto; max-width: none; transform: translateX(-50%); filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
+  .streak { position: absolute; z-index: 3; left: 24%; bottom: 24%; width: 30%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,130,70,.95), rgba(242,84,27,.55) 50%, rgba(242,84,27,0)); filter: blur(14px); opacity: .9; pointer-events: none; }
+  .ghost { position: absolute; z-index: 3; bottom: 0; left: 50%; height: 72%; width: auto; max-width: none; transform: translateX(-74%); opacity: .45; pointer-events: none; }
 
-  /* Hero UI */
+  /* Figure + Meta Ray-Ban capture LED */
+  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 993 / 1400; transform: translateX(-50%); pointer-events: none; }
+  .figure img { width: 100%; height: 100%; max-width: none; filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
+  .led { position: absolute; left: 49.9%; top: 9.8%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
+  .led::before { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px 2px #fff, 0 0 16px 6px rgba(255,255,255,.75); animation: blink 1.6s steps(1, end) infinite; }
+  .led::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; border: 1px solid rgba(255,255,255,.0); transition: border-color .2s; }
+  .led:hover::after, .led:focus-visible::after { border-color: rgba(255,255,255,.9); }
+  .led:focus-visible { outline: none; }
+  .led-tip { position: absolute; left: calc(49.9% + 26px); top: calc(9.8% - 14px); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--ink); color: #f6f5f2; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; pointer-events: none; }
+  .led:hover + .led-tip, .led:focus-visible + .led-tip { opacity: 1; transform: none; }
+  @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .08; } }
+
   .nav { position: absolute; z-index: 10; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px var(--g); }
   .brand { font-weight: 800; font-stretch: 112%; font-size: 20px; letter-spacing: -.01em; text-decoration: none; }
   .links { display: flex; gap: 6px; padding: 4px; border-radius: 999px; background: rgba(246,245,242,.7); backdrop-filter: blur(10px); list-style: none; margin: 0; }
@@ -89,12 +103,12 @@
   .menu ul a { display: block; padding: 12px 14px; border-radius: 12px; text-decoration: none; font-weight: 600; }
   .menu ul a:hover { background: var(--card); }
 
-  .topnotes { position: absolute; z-index: 6; top: 84px; left: var(--g); right: var(--g); display: flex; justify-content: space-between; font-size: 13px; line-height: 1.35; }
+  .topnotes { position: absolute; z-index: 6; top: 84px; left: var(--g); right: var(--g); display: flex; justify-content: space-between; font-size: 13px; line-height: 1.35; pointer-events: none; }
   .topnotes p { margin: 0; }
   .topnotes p:last-child { text-align: right; }
 
   .intro { position: absolute; z-index: 6; left: var(--g); bottom: var(--g); max-width: 340px; }
-  .intro h2 { margin: 0 0 18px; text-shadow: 0 0 18px var(--card); font-weight: 600; font-stretch: 100%; font-size: clamp(22px, 2vw, 30px); line-height: 1.12; letter-spacing: -.015em; }
+  .intro h2 { margin: 0 0 18px; text-shadow: 0 0 18px var(--card); font-weight: 600; font-size: clamp(22px, 2vw, 30px); line-height: 1.12; letter-spacing: -.015em; }
   .socials { display: flex; gap: 8px; margin-top: 14px; }
   .socials a { width: 32px; height: 32px; font-size: 10px; font-weight: 700; }
 
@@ -102,26 +116,65 @@
   .badge svg.ring { position: absolute; inset: 0; animation: spin 14s linear infinite; }
   .badge .arrow { width: 44px; height: 44px; border-radius: 50%; background: var(--ink); color: #f6f5f2; display: grid; place-items: center; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .badge svg.ring { animation: none; } html { scroll-behavior: auto; } }
 
-  /* ---------- MEET (Onmark) ---------- */
+  /* ---------- META POV MODAL ---------- */
+  .pov { border: 0; padding: 0; margin: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; background: #050505; color: #f6f5f2; overflow: hidden; }
+  .pov::backdrop { background: #050505; }
+  .pov[open] { display: grid; place-items: center; animation: povIn .5s var(--ease); }
+  @keyframes povIn { from { opacity: 0; transform: scale(1.06); filter: blur(10px); } to { opacity: 1; transform: none; filter: none; } }
+  .pov-frame { position: relative; height: min(88dvh, 133vw); aspect-ratio: 3 / 4; border-radius: 26px; overflow: hidden; background: #111; box-shadow: 0 40px 120px rgba(0,0,0,.6); }
+  .pov-frame img { position: absolute; inset: -3%; width: 106%; height: 106%; max-width: none; object-fit: cover; animation: bob 5.5s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translate(0,0) rotate(0); } 25% { transform: translate(-.6%, .5%) rotate(-.3deg); } 50% { transform: translate(.3%, -.4%) rotate(.25deg); } 75% { transform: translate(.6%, .3%) rotate(-.15deg); } }
+  .pov-frame::after { /* lens vignette + a hint of the frame rim at the top corners */
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 120% 90% at 50% 55%, transparent 55%, rgba(0,0,0,.55)), radial-gradient(circle at -6% -8%, rgba(0,0,0,.9) 14%, transparent 26%); }
+  .hud { position: absolute; z-index: 2; inset: 0; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+  .hud-top { display: flex; justify-content: space-between; align-items: center; }
+  .rec { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; background: rgba(0,0,0,.45); backdrop-filter: blur(6px); opacity: 0; transition: opacity .3s; }
+  .rec i { width: 8px; height: 8px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px #ff3b30; animation: blink 1s steps(1, end) infinite; }
+  .pov.recording .rec { opacity: 1; }
+  .voice { align-self: center; max-width: 92%; padding: 12px 18px; border-radius: 18px; background: rgba(15,15,14,.55); backdrop-filter: blur(10px); text-transform: none; letter-spacing: 0; font-family: var(--text); font-size: 17px; font-weight: 500; text-align: center; }
+  .voice small { display: block; margin-top: 4px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #c9c7c2; }
+  .wave { display: inline-flex; gap: 3px; height: 14px; align-items: center; margin-right: 8px; vertical-align: -2px; }
+  .wave b { width: 3px; border-radius: 2px; background: #fff; animation: wave .9s ease-in-out infinite; }
+  .wave b:nth-child(2) { animation-delay: .15s; } .wave b:nth-child(3) { animation-delay: .3s; } .wave b:nth-child(4) { animation-delay: .45s; }
+  @keyframes wave { 0%,100% { height: 4px; } 50% { height: 14px; } }
+  .pov-close { position: absolute; z-index: 3; top: 18px; right: 18px; }
+  .pov-close.circle { background: #f6f5f2; color: var(--ink); border: 0; cursor: pointer; }
+  .pov-caption { position: absolute; z-index: 3; left: 18px; bottom: 18px; max-width: 280px; font-size: 13px; line-height: 1.45; color: #b9b7b1; }
+  .pov-caption b { display: block; color: #f6f5f2; font-weight: 600; margin-bottom: 4px; }
+
+  /* ---------- MEET ---------- */
   section { padding: clamp(72px, 10vw, 150px) var(--g); }
   .meet { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(32px, 6vw, 96px); }
   .meet aside { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
-  .stat b { display: block; font-weight: 600; font-stretch: 100%; font-size: clamp(64px, 7vw, 104px); line-height: .9; letter-spacing: -.04em; }
+  .stat b { display: block; font-weight: 600; font-size: clamp(64px, 7vw, 104px); line-height: .9; letter-spacing: -.04em; }
   .stat b span { color: var(--mute); }
   .stat p { margin: 10px 0 0; font-size: 14px; font-weight: 600; }
-  .big-copy { margin: 0; font-weight: 600; font-stretch: 100%; font-size: clamp(30px, 3.6vw, 56px); line-height: 1.12; letter-spacing: -.025em; }
-  .ipill { display: inline-block; vertical-align: -.08em; width: 2.1em; height: .86em; border-radius: 999px; background-size: cover; background-position: center; }
+  .big-copy { margin: 0; font-weight: 600; font-size: clamp(30px, 3.6vw, 56px); line-height: 1.16; letter-spacing: -.025em; }
+
+  /* Inline graphics that open a detail card on hover / focus */
+  .peek { position: relative; display: inline-block; vertical-align: -.08em; height: .86em; border: 0; padding: 0; cursor: help; background: none; }
+  .peek > .ipill, .peek > .barcode { display: block; height: 100%; transition: transform .3s var(--ease), box-shadow .3s; }
+  .ipill { width: 2.1em; border-radius: 999px; background-size: cover; background-position: center; }
   .ipill.o { background-image: url(assets/orange-11-blur.jpg); box-shadow: 0 0 22px rgba(242,84,27,.45); }
   .ipill.b { background-image: url(assets/builder-blur.jpg); }
-  .barcode { display: inline-block; vertical-align: -.06em; width: 1.9em; height: .8em; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px); }
+  .barcode { width: 1.9em; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px); }
+  .peek:hover > span:first-child, .peek:focus-visible > span:first-child { transform: scale(1.12); }
+  .peek:focus-visible { outline: 2px solid var(--ember); outline-offset: 4px; border-radius: 999px; }
+  .pop { position: absolute; z-index: 20; left: 50%; bottom: calc(100% + 14px); width: 280px; padding: 10px; border-radius: 20px; background: #f6f5f2; color: var(--ink); box-shadow: 0 30px 60px -20px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.05); text-align: left; letter-spacing: 0;
+    opacity: 0; visibility: hidden; transform: translate(-50%, 10px) scale(.96); transform-origin: 50% 100%; transition: opacity .25s, transform .3s var(--ease), visibility 0s .3s; }
+  .peek:hover .pop, .peek:focus-visible .pop, .peek:focus-within .pop { opacity: 1; visibility: visible; transform: translate(-50%, 0) scale(1); transition: opacity .25s, transform .3s var(--ease); }
+  .pop img { width: 100%; height: 150px; object-fit: cover; border-radius: 12px; }
+  .pop .when { display: block; margin: 12px 6px 2px; font-family: var(--display); font-size: 24px; line-height: 1; }
+  .pop .what { display: block; margin: 0 6px 4px; font-size: 15px; font-weight: 600; line-height: 1.3; }
+  .pop .why { display: block; margin: 0 6px 6px; font-size: 13px; font-weight: 500; line-height: 1.45; color: var(--ink-2); }
   .meet .body { max-width: 46ch; margin: 40px 0 28px; font-size: 16px; line-height: 1.6; font-weight: 500; }
 
-  /* ---------- DISCIPLINES (Kinetic staggered cards) ---------- */
+  /* ---------- DISCIPLINE CARDS ---------- */
   .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); padding: 0 var(--g) clamp(72px, 10vw, 150px); }
-  .card .tag { align-self: flex-start; }
   .card { position: relative; min-height: clamp(300px, 30vw, 420px); border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; color: #f6f5f2; background: var(--ink) center/cover; }
+  .card .tag { align-self: flex-start; }
   .card:nth-child(even) { margin-top: clamp(48px, 7vw, 100px); }
   .card.o { background-image: linear-gradient(to top, rgba(15,15,14,.72), rgba(15,15,14,0) 55%), url(assets/orange-11-blur.jpg); }
   .card.b { background-image: linear-gradient(to top, rgba(15,15,14,.78), rgba(15,15,14,.05) 60%), url(assets/builder-blur.jpg); }
@@ -129,20 +182,46 @@
   .card h3 { margin: 12px 0 8px; font-weight: 500; font-size: clamp(22px, 1.9vw, 28px); line-height: 1.12; letter-spacing: -.015em; }
   .card p { margin: 0; font-size: 13px; line-height: 1.45; opacity: .72; }
 
-  /* ---------- WORK ---------- */
-  .work-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
-  .work-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(72px, 13vw, 210px); line-height: .84; }
-  .work { list-style: none; margin: 0; padding: 0; }
-  .work li a { display: grid; grid-template-columns: 60px minmax(0, 1fr) auto 90px; gap: 18px; align-items: center; padding: 22px 0; border-top: 1px solid var(--rule); text-decoration: none; }
-  .work li:last-child a { border-bottom: 1px solid var(--rule); }
-  .work h3 { margin: 0; font-weight: 600; font-size: clamp(24px, 3.2vw, 46px); letter-spacing: -.025em; line-height: 1.05; transition: transform .25s; }
-  .work .n { color: var(--ink-2); }
-  .work .yr { text-align: right; color: var(--ink-2); }
-  .work li a:hover h3 { transform: translateX(10px); }
-  .work li a:hover .n .dot { visibility: visible; }
-  .work .n .dot { visibility: hidden; margin-right: 8px; }
+  /* ---------- TIMELINE (horizontal) ---------- */
+  .tl { padding: 0; }
+  .tl-pin { position: relative; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; }
+  .tl.pinned .tl-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+  .tl-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; padding: 0 var(--g); margin-bottom: 28px; position: sticky; left: 0; }
+  .tl-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(64px, 9vw, 150px); line-height: .84; }
+  .tl-head p { margin: 0 0 6px; }
+  .track { --py: 172px; position: relative; width: calc(30 * var(--py) + 2 * var(--g) + 220px); height: 560px; padding: 0 var(--g); will-change: transform; }
+  .tl .lane-label { position: absolute; left: var(--g); writing-mode: vertical-rl; transform: rotate(180deg); color: var(--ink-2); }
+  .tl .lane-label.top { top: 40px; } .tl .lane-label.bot { bottom: 40px; }
+  .axis { position: absolute; left: var(--g); right: var(--g); top: 264px; height: 2px; background: var(--ink); }
+  .x { position: absolute; left: calc(var(--g) + 60px + var(--x) * var(--py)); }
+  .tick { top: 258px; width: 1px; height: 14px; background: var(--ink); }
+  .yr { top: 240px; transform: translateX(7px); color: var(--ink-2); }
+  .yr.key { color: var(--ink); font-weight: 700; }
+  /* Career above the line */
+  .job { top: 120px; height: 96px; width: calc(var(--w) * var(--py)); border-radius: 18px; padding: 14px 16px; background: #f6f5f2; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 0 0 0 1px var(--rule); }
+  .job b { font-weight: 700; font-stretch: 90%; font-size: 26px; letter-spacing: -.02em; line-height: 1; }
+  .job span { color: var(--ink-2); }
+  .job.now { background: var(--ink); color: #f6f5f2; box-shadow: none; }
+  .job.now span { color: #b9b7b1; }
+  .job .rep { position: absolute; left: 340px; right: 60px; top: 50%; transform: translateY(-50%); overflow: hidden; white-space: nowrap; font-style: normal; color: #6f6d68; letter-spacing: .12em; }
+  .job.now::after { content: "→"; position: absolute; right: 16px; top: 12px; font-size: 22px; color: var(--ember); }
+  .job::before { content: ""; position: absolute; left: 0; top: 96px; width: 2px; height: 48px; background: var(--ink); }
+  /* Life below the line */
+  .life { top: 265px; width: 158px; transform: translateX(-1px); }
+  .life::before { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: var(--stem, 36px); background: var(--ink); }
+  .life::after { content: ""; position: absolute; left: -5px; top: -5px; width: 11px; height: 11px; border-radius: 50%; background: var(--page); box-shadow: inset 0 0 0 2px var(--ink); }
+  .life.hot::after { background: var(--ember); box-shadow: 0 0 12px rgba(242,84,27,.7); }
+  .life div { margin-top: var(--stem, 36px); padding: 10px 0 0 10px; border-left: 1px solid var(--ink); }
+  .life.low { --stem: 112px; }
+  .life b { display: block; font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1; }
+  .life strong { display: block; margin: 6px 0 8px; font-size: 15px; font-weight: 600; line-height: 1.25; }
+  .life .tag { min-height: 22px; font-size: 10px; padding: 0 9px; }
+  .now-pin { top: 257px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 0 6px rgba(242,84,27,.18), 0 0 20px rgba(242,84,27,.8); }
+  .tl-progress { height: 2px; margin: 18px var(--g) 0; background: var(--rule); position: sticky; left: var(--g); }
+  .tl-progress i { display: block; height: 100%; width: 0; background: var(--ember); }
+  .tl-hint { padding: 12px var(--g) 0; color: var(--ink-2); position: sticky; left: 0; }
 
-  /* ---------- STATEMENT (Kinetic) ---------- */
+  /* ---------- STATEMENT ---------- */
   .statement { text-align: center; }
   .statement .mk { font-weight: 800; font-stretch: 112%; font-size: 22px; color: var(--ember); }
   .statement h2 { margin: 28px auto 0; max-width: 16ch; font-weight: 600; font-size: clamp(44px, 7.4vw, 124px); line-height: 1; letter-spacing: -.035em; }
@@ -154,12 +233,20 @@
   .end h2 { margin: 0; font-weight: 600; font-size: clamp(34px, 4.4vw, 68px); line-height: 1.04; letter-spacing: -.03em; }
   .end h2 span { color: #8d8b86; }
   .end ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; }
-  .end ul a { display: block; padding: 12px 0; border-bottom: 1px solid rgba(246,245,242,.14); text-decoration: none; font-size: 15px; }
+  .end ul a { display: flex; justify-content: space-between; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(246,245,242,.14); text-decoration: none; font-size: 15px; }
+  .end ul a span { color: #8d8b86; font-size: 13px; }
   .end ul a:hover { color: var(--ember); }
+  .end .handle { margin: 18px 0 0; color: #b9b7b1; }
   .end .ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
   .end .giant { margin: clamp(40px, 6vw, 80px) 0 0; font-weight: 500; font-stretch: 118%; font-size: 18.4vw; line-height: .74; letter-spacing: -.06em; text-align: center; white-space: nowrap; transform: translateY(12%); color: #f6f5f2; }
   .end .giant span { color: var(--ember); }
   .legal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 16px calc(var(--g) + 8px) 22px; color: var(--ink-2); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .badge svg.ring, .led::before, .pov-frame img, .wave b { animation: none; }
+    .stage, .fly { transition: none; }
+  }
 
   /* ---------- Small screens ---------- */
   @media (max-width: 860px) {
@@ -168,24 +255,24 @@
     .nav .pill.talk { display: none; }
     .hero { height: auto; max-height: none; min-height: 0; }
     .stage { position: relative; height: 132vw; max-height: 640px; }
-    .wordmark { top: 50%; font-size: 23vw; }
+    .wordmark { top: 50%; font-size: 26vw; }
     .figure { height: 74%; }
     .ghost { height: 70%; }
     .fly.a { top: 58%; left: 2%; }
     .fly.b { top: 22%; right: 2%; }
     .fly.c { display: none; }
+    .led-tip { display: none; }
     .topnotes { top: 74px; font-size: 12px; }
     .intro { position: relative; left: auto; bottom: auto; max-width: none; padding: 8px var(--g) var(--g); }
     .badge { display: none; }
     .meet { grid-template-columns: minmax(0, 1fr); }
     .meet aside { flex-flow: row wrap; justify-content: space-between; gap: 24px; order: 2; }
     .meet aside .mono { flex-basis: 100%; }
+    .pop { width: 230px; }
     .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .work li a { grid-template-columns: 40px minmax(0, 1fr) 56px; }
-    .work .cat { display: none; }
+    .track { --py: 150px; }
     .end-top { grid-template-columns: minmax(0, 1fr); }
   }
-  @media (min-width: 861px) { .stage { position: absolute; inset: 0; } }
 </style>
 </head>
 <body>
@@ -197,8 +284,8 @@
       <li><a href="#top" aria-current="page">Home</a></li>
       <li><a href="#meet">About</a></li>
       <li><a href="#ventures">Ventures</a></li>
-      <li><a href="#work">Work</a></li>
-      <li><a href="#music">Music</a></li>
+      <li><a href="#work">Timeline</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-r">
       <a class="pill talk micro" href="#contact">Let's talk <span aria-hidden="true">+</span></a>
@@ -209,8 +296,7 @@
         <ul>
           <li><a href="#meet">About</a></li>
           <li><a href="#ventures">Ventures</a></li>
-          <li><a href="#work">Work</a></li>
-          <li><a href="#music">Music</a></li>
+          <li><a href="#work">Timeline</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </details>
@@ -223,26 +309,30 @@
       <div class="plane ceil"><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span></div>
       <div class="plane floor"><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span></div>
     </div>
-    <h1 class="wordmark" aria-label="Charlie Hinojosa">HINOJOSA</h1>
-    <img class="fly a" src="assets/orange-11.jpg" alt="" aria-hidden="true">
-    <img class="fly b" src="assets/grey-hinojosa.jpg" alt="" aria-hidden="true">
-    <img class="fly c" src="assets/builder-cover-bw.jpg" alt="" aria-hidden="true">
+    <h1 class="wordmark" aria-label="Charlie Hinojosa">CHARLIE</h1>
+    <img class="fly a" src="assets/orange-11.jpg" alt="Poster: Charlie Hinojosa, Creative by Nature">
+    <img class="fly b" src="assets/grey-hinojosa.jpg" alt="Poster: Hinojosa, Builder / Creative">
+    <img class="fly c" src="assets/builder-cover-bw.jpg" alt="Poster: Builder cover">
     <div class="streak" aria-hidden="true"></div>
     <img class="ghost" src="assets/charlie-trail.webp" alt="" aria-hidden="true">
-    <img class="figure" src="assets/charlie-bw-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa seated on a wooden block, one sneaker toward the camera.">
+    <div class="figure">
+      <img src="assets/charlie-bw-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa seated on a wooden block, wearing Ray-Ban Meta glasses.">
+      <button class="led" type="button" id="led" aria-haspopup="dialog" aria-controls="pov"><span class="sr">See through Charlie's Ray-Ban Meta glasses</span></button>
+      <span class="led-tip" aria-hidden="true">“Hey Meta, record”</span>
+    </div>
     <div class="topnotes">
-      <p>Early web, music<br>and AI since 2011</p>
-      <p>Builder / Creative<br>Est. 2011</p>
+      <p>Cisco → Intel → Sightbox<br>Building since 1999</p>
+      <p>Builder / Creative<br>Sightbox est. 2011</p>
     </div>
   </div>
 
   <div class="intro">
     <h2>Builder. Creative.<br><span class="mute">Founder of Sightbox Studios™</span></h2>
-    <a class="pill light" href="#work"><span class="thumb" aria-hidden="true"></span>See the work</a>
+    <a class="pill light" href="#work"><span class="thumb" aria-hidden="true"></span>See the timeline</a>
     <div class="socials">
-      <a class="circle" href="#contact" aria-label="Instagram">IG</a>
-      <a class="circle" href="#contact" aria-label="LinkedIn">in</a>
-      <a class="circle" href="#contact" aria-label="X">X</a>
+      <a class="circle" href="https://instagram.com/charliehinojosa" target="_blank" rel="noopener" aria-label="Instagram, @charliehinojosa">IG</a>
+      <a class="circle" href="https://www.linkedin.com/in/charliehinojosa" target="_blank" rel="noopener" aria-label="LinkedIn, charliehinojosa">in</a>
+      <a class="circle" href="https://x.com/charliehinojosa" target="_blank" rel="noopener" aria-label="X, @charliehinojosa">X</a>
     </div>
   </div>
 
@@ -255,76 +345,232 @@
   </a>
 </header>
 
+<dialog class="pov" id="pov" aria-label="Point of view from Charlie's Ray-Ban Meta glasses">
+  <div class="pov-frame">
+    <img src="assets/pov-meta.jpg" alt="First-person view from Charlie's glasses: his hands clasped over his knees and black sneakers, a photographer crouched ahead shooting him, softboxes and a tether laptop showing the shot.">
+    <div class="hud">
+      <div class="hud-top">
+        <span class="rec"><i></i><span id="rec-time">00:00</span></span>
+        <span>Ray-Ban | Meta</span>
+      </div>
+      <p class="voice" id="voice" aria-live="polite"><span class="wave" aria-hidden="true"><b></b><b></b><b></b><b></b></span><span id="voice-text">“Hey Meta, record.”</span><small id="voice-sub">Listening…</small></p>
+    </div>
+  </div>
+  <p class="pov-caption"><b>Through my lenses</b>The BUILDER shoot, from where I was sitting.</p>
+  <button class="circle pov-close" type="button" id="pov-close" aria-label="Close and return">
+    <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg>
+  </button>
+</dialog>
+
 <section id="meet">
   <div class="meet">
     <aside>
       <span class="mono">+ Meet Charlie</span>
-      <div class="stat"><b>15<span>yrs</span></b><p>Building on the internet</p></div>
-      <div class="stat"><b>3<span>×</span></b><p>Web · Music · AI</p></div>
+      <div class="stat"><b>27<span>yrs</span></b><p>Building since 1999</p></div>
+      <div class="stat"><b>5<span>×</span></b><p>Startups &amp; ventures</p></div>
     </aside>
     <div>
-      <p class="big-copy">Builder and creative since 2011, from the early web <span class="ipill b" aria-hidden="true"></span> to music <span class="ipill o" aria-hidden="true"></span> and now AI. <span class="mute">Founder of Sightbox Studios, building <span class="barcode" aria-hidden="true"></span> what comes next.</span></p>
+      <p class="big-copy">Building since 1999, from Cisco and Intel
+        <button class="peek" type="button" aria-describedby="pop-web"><span class="ipill b" aria-hidden="true"></span>
+          <span class="pop" role="tooltip" id="pop-web"><img src="assets/grey-hinojosa.jpg" alt=""><span class="when">1999 → 2011</span><span class="what">Cisco, then Intel</span><span class="why">Cisco from 1999, Intel from 2008, then out on his own with Sightbox Studios in 2011.</span></span>
+        </button>
+        to music
+        <button class="peek" type="button" aria-describedby="pop-music"><span class="ipill o" aria-hidden="true"></span>
+          <span class="pop" role="tooltip" id="pop-music"><img src="assets/orange-11.jpg" alt=""><span class="when">2000</span><span class="what">Musician with Chozen</span><span class="why">Then filmmaking from 2007. The creative thread runs through all of it.</span></span>
+        </button>
+        and now AI. <span class="mute">Founder of Sightbox Studios, building
+        <button class="peek" type="button" aria-describedby="pop-next"><span class="barcode" aria-hidden="true"></span>
+          <span class="pop" role="tooltip" id="pop-next"><img src="assets/builder-cover-bw.jpg" alt=""><span class="when">2025 → 2026</span><span class="what">Xoomo Wrestling League &amp; Flux Intelligence Group</span><span class="why">From Texas All-State wrestler in 1997 to founding Xoomo Wrestling League in 2025. Flux Intelligence Group in 2026.</span></span>
+        </button>
+        what comes next.</span></p>
       <p class="body">[SHORT BIO: two or three sentences in Charlie's voice about where he started, what he builds and why it matters.]</p>
-      <a class="pill micro" href="#work">My story <span aria-hidden="true">+</span></a>
+      <a class="pill micro" href="#work">My timeline <span aria-hidden="true">+</span></a>
     </div>
   </div>
 </section>
 
 <div class="cards" id="ventures">
   <article class="card">
-    <span class="tag">Since 2011</span>
-    <div><span class="dot" aria-hidden="true"></span><h3>Early web</h3><p>Where it started.</p></div>
+    <span class="tag">Cisco · Intel</span>
+    <div><span class="dot" aria-hidden="true"></span><h3>Tech</h3><p>Where it started, in 1999.</p></div>
   </article>
-  <article class="card o" id="music">
-    <span class="tag">Sound</span>
-    <div><span class="dot" aria-hidden="true"></span><h3>Music</h3><p>The through-line.</p></div>
+  <article class="card o">
+    <span class="tag">Chozen · 2000</span>
+    <div><span class="dot" aria-hidden="true"></span><h3>Music &amp; film</h3><p>The through-line.</p></div>
   </article>
   <article class="card b">
     <span class="tag">Now</span>
-    <div><span class="dot" aria-hidden="true"></span><h3>AI</h3><p>What's next.</p></div>
+    <div><span class="dot" aria-hidden="true"></span><h3>Startups &amp; AI</h3><p>Tapp That App, Stacado, Xoomo, Flux.</p></div>
   </article>
   <article class="card l">
-    <span class="tag">Studio</span>
+    <span class="tag">2011 — Now</span>
     <div><span class="dot" aria-hidden="true"></span><h3>Sightbox Studios</h3><p>[ONE LINE ON THE STUDIO]</p></div>
   </article>
 </div>
 
-<section id="work" style="padding-top: 0">
-  <div class="work-head">
-    <h2>THE WORK</h2>
-    <span class="mono">+ Selected · 2011 — Now</span>
+<section class="tl" id="work" aria-labelledby="tl-title">
+  <div class="tl-pin" id="tl-pin" tabindex="0" aria-label="Timeline, scroll horizontally">
+    <div class="tl-head">
+      <h2 id="tl-title">THE TIMELINE</h2>
+      <p class="mono">+ Career above the line · Life below · 1997 — Now</p>
+    </div>
+    <div class="track" id="track">
+      <span class="lane-label top mono" aria-hidden="true">Career</span>
+      <span class="lane-label bot mono" aria-hidden="true">Life &amp; passion</span>
+      <div class="axis" aria-hidden="true"></div>
+
+      <!-- year ticks: --x is years since 1997 -->
+      <span class="x tick" style="--x:0"></span><span class="x yr mono" style="--x:0">1997</span>
+      <span class="x tick" style="--x:2"></span><span class="x yr mono key" style="--x:2">1999</span>
+      <span class="x tick" style="--x:4"></span><span class="x yr mono" style="--x:4">2001</span>
+      <span class="x tick" style="--x:6"></span><span class="x yr mono" style="--x:6">2003</span>
+      <span class="x tick" style="--x:8"></span><span class="x yr mono" style="--x:8">2005</span>
+      <span class="x tick" style="--x:10"></span><span class="x yr mono" style="--x:10">2007</span>
+      <span class="x tick" style="--x:11"></span><span class="x yr mono key" style="--x:11">2008</span>
+      <span class="x tick" style="--x:14"></span><span class="x yr mono key" style="--x:14">2011</span>
+      <span class="x tick" style="--x:16"></span><span class="x yr mono" style="--x:16">2013</span>
+      <span class="x tick" style="--x:18"></span><span class="x yr mono" style="--x:18">2015</span>
+      <span class="x tick" style="--x:20"></span><span class="x yr mono" style="--x:20">2017</span>
+      <span class="x tick" style="--x:22"></span><span class="x yr mono" style="--x:22">2019</span>
+      <span class="x tick" style="--x:24"></span><span class="x yr mono" style="--x:24">2021</span>
+      <span class="x tick" style="--x:26"></span><span class="x yr mono" style="--x:26">2023</span>
+      <span class="x tick" style="--x:28"></span><span class="x yr mono" style="--x:28">2025</span>
+
+      <ol class="sr">
+        <li>Career: Cisco, 1999 to 2008. Intel, 2008 to 2011. Sightbox Studios, founder, 2011 to present.</li>
+      </ol>
+      <div class="x job" style="--x:2; --w:9" aria-hidden="true"><span class="mono">1999 — 2008</span><b>Cisco</b></div>
+      <div class="x job" style="--x:11; --w:3" aria-hidden="true"><span class="mono">2008 — 2011</span><b>Intel</b></div>
+      <div class="x job now" style="--x:14; --w:15.4" aria-hidden="true"><span class="mono">2011 — Present · Founder</span><b>Sightbox Studios</b><i class="rep mono">Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present ·</i></div>
+
+      <ol style="list-style: none; margin: 0; padding: 0">
+        <li class="x life hot" style="--x:0"><div><b>1997</b><strong>Texas All-State Wrestler</strong><span class="tag">Wrestling</span></div></li>
+        <li class="x life low" style="--x:2"><div><b>1999</b><strong>Married</strong><span class="tag">Family</span></div></li>
+        <li class="x life" style="--x:3"><div><b>2000</b><strong>Musician with Chozen</strong><span class="tag">Music</span></div></li>
+        <li class="x life low" style="--x:4"><div><b>2001</b><strong>Anyssa born</strong><span class="tag">Family</span></div></li>
+        <li class="x life" style="--x:9"><div><b>2006</b><strong>Cianna born</strong><span class="tag">Family</span></div></li>
+        <li class="x life low" style="--x:10"><div><b>2007</b><strong>Filmmaking</strong><span class="tag">Film</span></div></li>
+        <li class="x life" style="--x:19"><div><b>2016</b><strong>Tapp That App</strong><span class="tag">Startups</span></div></li>
+        <li class="x life low" style="--x:25"><div><b>2022</b><strong>Stacado</strong><span class="tag">Startup</span></div></li>
+        <li class="x life hot" style="--x:28"><div><b>2025</b><strong>Xoomo Wrestling League</strong><span class="tag">Founded</span></div></li>
+        <li class="x life hot low" style="--x:29"><div><b>2026</b><strong>Flux Intelligence Group</strong><span class="tag">Now</span></div></li>
+      </ol>
+      <span class="x now-pin" style="--x:29.4" aria-hidden="true"></span>
+    </div>
+    <div class="tl-progress" aria-hidden="true"><i id="tl-bar"></i></div>
+    <p class="tl-hint mono" id="tl-hint">Scroll → to move through time</p>
   </div>
-  <ul class="work">
-    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>01</span><h3>Sightbox Studios</h3><span class="cat tag">Founder</span><span class="yr mono">[YEAR]</span></a></li>
-    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>02</span><h3>[PROJECT NAME]</h3><span class="cat tag">Early web</span><span class="yr mono">[YEAR]</span></a></li>
-    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>03</span><h3>[PROJECT NAME]</h3><span class="cat tag">Music</span><span class="yr mono">[YEAR]</span></a></li>
-    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>04</span><h3>[PROJECT NAME]</h3><span class="cat tag">AI</span><span class="yr mono">[YEAR]</span></a></li>
-  </ul>
 </section>
 
-<section class="statement" style="padding-top: 0">
+<section class="statement">
   <div class="mk" aria-hidden="true">CH©</div>
-  <h2>Building what's next <span class="fade">on the internet since 2011.</span></h2>
+  <h2>Building what's next <span class="fade">on the internet since 1999.</span></h2>
 </section>
 
 <footer class="end" id="contact">
   <div class="end-top">
     <div>
       <h2>Have something to build? <span>Let's talk.</span></h2>
+      <p class="handle mono">@charliehinojosa everywhere</p>
       <div class="ctas">
         <a class="pill light micro" href="mailto:[EMAIL]">[EMAIL] <span aria-hidden="true">+</span></a>
       </div>
     </div>
     <ul>
-      <li><a href="#contact">Instagram</a></li>
-      <li><a href="#contact">LinkedIn</a></li>
-      <li><a href="#contact">X</a></li>
-      <li><a href="#contact">Sightbox Studios</a></li>
+      <li><a href="https://instagram.com/charliehinojosa" target="_blank" rel="noopener">Instagram <span>@charliehinojosa</span></a></li>
+      <li><a href="https://www.linkedin.com/in/charliehinojosa" target="_blank" rel="noopener">LinkedIn <span>/in/charliehinojosa</span></a></li>
+      <li><a href="https://x.com/charliehinojosa" target="_blank" rel="noopener">X <span>@charliehinojosa</span></a></li>
+      <li><a href="#ventures">Sightbox Studios <span>2011 —</span></a></li>
     </ul>
   </div>
   <p class="giant" aria-hidden="true">hinojosa<span>.</span></p>
 </footer>
-<div class="legal micro"><span>© Charlie Hinojosa</span><span>Builder / Creative — Est. 2011</span></div>
+<div class="legal micro"><span>© Charlie Hinojosa</span><span>Builder / Creative — Since 1999</span></div>
 
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Meta glasses: zoom into the LED, then open the POV dialog */
+  const hero = document.querySelector('.hero');
+  const stage = hero.querySelector('.stage');
+  const led = document.getElementById('led');
+  const pov = document.getElementById('pov');
+  const recTime = document.getElementById('rec-time');
+  const voiceText = document.getElementById('voice-text');
+  const voiceSub = document.getElementById('voice-sub');
+  let timers = [];
+
+  function openPov() {
+    const s = stage.getBoundingClientRect(), l = led.getBoundingClientRect();
+    stage.style.setProperty('--ox', (l.left + l.width / 2 - s.left) + 'px');
+    stage.style.setProperty('--oy', (l.top + l.height / 2 - s.top) + 'px');
+    hero.classList.add('warp');
+    setTimeout(() => { pov.showModal(); startRecording(); }, reduce ? 0 : 620);
+  }
+  function startRecording() {
+    pov.classList.remove('recording');
+    voiceText.textContent = '“Hey Meta, record.”';
+    voiceSub.textContent = 'Listening…';
+    let t = 0;
+    timers.push(setTimeout(() => {
+      voiceText.textContent = 'Recording video';
+      voiceSub.textContent = 'Say “Hey Meta, stop” to finish';
+      pov.classList.add('recording');
+      timers.push(setInterval(() => {
+        t++; recTime.textContent = String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+      }, 1000));
+    }, 1600));
+  }
+  function closePov() {
+    timers.forEach(id => { clearTimeout(id); clearInterval(id); }); timers = [];
+    recTime.textContent = '00:00';
+    hero.classList.remove('warp');
+  }
+  led.addEventListener('click', openPov);
+  document.getElementById('pov-close').addEventListener('click', () => pov.close());
+  pov.addEventListener('close', () => { closePov(); led.focus(); });
+  pov.addEventListener('click', e => { if (e.target === pov) pov.close(); });
+
+  /* Timeline: pin the section and drive it sideways with vertical scroll on wide screens */
+  const sec = document.getElementById('work');
+  const pin = document.getElementById('tl-pin');
+  const track = document.getElementById('track');
+  const bar = document.getElementById('tl-bar');
+  const hint = document.getElementById('tl-hint');
+  const wide = matchMedia('(min-width: 861px)');
+
+  function layout() {
+    const pinned = wide.matches && !reduce;
+    sec.classList.toggle('pinned', pinned);
+    track.style.transform = '';
+    if (pinned) {
+      const travel = Math.max(0, track.scrollWidth - innerWidth);
+      sec.style.height = (innerHeight + travel) + 'px';
+      hint.textContent = 'Keep scrolling to move through time';
+    } else {
+      sec.style.height = '';
+      hint.textContent = 'Swipe → to move through time';
+    }
+    onScroll();
+  }
+  function onScroll() {
+    if (sec.classList.contains('pinned')) {
+      const travel = Math.max(0, track.scrollWidth - innerWidth);
+      const p = Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / Math.max(1, sec.offsetHeight - innerHeight)));
+      track.style.transform = 'translateX(' + (-p * travel) + 'px)';
+      bar.style.width = (p * 100) + '%';
+    } else {
+      const max = pin.scrollWidth - pin.clientWidth;
+      bar.style.width = (max > 0 ? pin.scrollLeft / max * 100 : 0) + '%';
+    }
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  pin.addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', layout);
+  document.fonts.ready.then(layout);
+  layout();
+})();
+</script>
 </body>
 </html>

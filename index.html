@@ -92,14 +92,14 @@
   .ghost { position: absolute; z-index: 3; bottom: 0; left: 50%; height: 72%; width: auto; max-width: none; transform: translateX(-74%); opacity: .45; pointer-events: none; }
 
   /* Figure + Meta Ray-Ban capture LED */
-  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 993 / 1400; transform: translateX(-50%); pointer-events: none; }
+  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 992 / 1400; transform: translateX(-50%); pointer-events: none; }
   .figure img { width: 100%; height: 100%; max-width: none; filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
-  .led { position: absolute; left: 49.9%; top: 9.8%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
+  .led { position: absolute; left: 49.2%; top: 8.8%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
   .led::before { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px 2px #fff, 0 0 16px 6px rgba(255,255,255,.75); animation: blink 1.6s steps(1, end) infinite; }
   .led::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; border: 1px solid rgba(255,255,255,.0); transition: border-color .2s; }
   .led:hover::after, .led:focus-visible::after { border-color: rgba(255,255,255,.9); }
   .led:focus-visible { outline: none; }
-  .led-tip { position: absolute; left: calc(49.9% + 26px); top: calc(9.8% - 14px); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--ink); color: #f6f5f2; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; pointer-events: none; }
+  .led-tip { position: absolute; left: calc(49.2% + 26px); top: calc(8.8% - 14px); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--ink); color: #f6f5f2; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; pointer-events: none; }
   .led:hover + .led-tip, .led:focus-visible + .led-tip { opacity: 1; transform: none; }
   @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .08; } }
 
@@ -390,7 +390,7 @@
     <div class="streak" aria-hidden="true"></div>
     <img class="ghost" src="assets/charlie-trail.webp" alt="" aria-hidden="true">
     <div class="figure">
-      <img src="assets/charlie-bw-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa seated on a wooden block, wearing Ray-Ban Meta glasses.">
+      <img src="assets/charlie-bw-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa seated on a wooden block, wearing Ray-Ban Meta glasses, his left hand on top showing a black wedding band.">
       <button class="led" type="button" id="led" aria-haspopup="dialog" aria-controls="pov"><span class="sr">See through Charlie's Ray-Ban Meta glasses</span></button>
       <span class="led-tip" aria-hidden="true">“Hey Meta, record”</span>
     </div>

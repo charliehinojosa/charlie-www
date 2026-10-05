@@ -112,10 +112,14 @@
   .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 1036 / 1400; transform: translateX(-50%); pointer-events: none; }
   .figure img { width: 100%; height: 100%; max-width: none; filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
   /* Hover the figure: Charlie morphs into his Odyssey avatar (hazmat suit + Walkman), revealed from the cursor */
-  .figure .suit { position: absolute; inset: 0; clip-path: circle(0% at var(--mx, 50%) var(--my, 40%)); transition: clip-path .75s cubic-bezier(.7,0,.2,1), filter .75s; filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)) brightness(1.6) saturate(.4); }
-  .figure .me { transition: filter .75s, opacity .75s; }
-  .figure.suited .suit { clip-path: circle(150% at var(--mx, 50%) var(--my, 40%)); filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
-  .figure.suited .me { filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)) brightness(1.8) blur(2px); opacity: 0; }
+  /* Suit up: the costume drops over him head-to-toe (soft wipe + a small settle) and lifts back off. Head, shoes and case are
+     registered pixel-for-pixel between the two cutouts, so only the suit itself moves. */
+  @property --p { syntax: "<percentage>"; inherits: true; initial-value: 0%; }
+  .figure { --p: 0%; transition: --p .62s cubic-bezier(.62,0,.3,1); }
+  .figure.suited { --p: 110%; transition-duration: .7s; }
+  .figure .me { -webkit-mask: linear-gradient(to bottom, transparent calc(var(--p) - 9%), #000 var(--p)); mask: linear-gradient(to bottom, transparent calc(var(--p) - 9%), #000 var(--p)); }
+  .figure .suit { position: absolute; inset: 0; -webkit-mask: linear-gradient(to bottom, #000 calc(var(--p) - 9%), transparent var(--p)); mask: linear-gradient(to bottom, #000 calc(var(--p) - 9%), transparent var(--p)); transform: translateY(-2.5%); transition: transform .5s cubic-bezier(.5,0,.75,0); }
+  .figure.suited .suit { transform: none; transition: transform .75s cubic-bezier(.25,1.35,.45,1); }
   .figure .led, .figure .led-tip { transition: opacity .3s; }
   .figure.suited .led, .figure.suited .led-tip { opacity: 0; }
   .led { position: absolute; left: 49.7%; top: 10%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
@@ -354,6 +358,7 @@
   .legal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 16px calc(var(--g) + 8px) 22px; color: var(--ink-2); }
 
   @media (prefers-reduced-motion: reduce) {
+    .figure, .figure.suited, .figure .suit, .figure.suited .suit { transition: none; }
     html { scroll-behavior: auto; }
     .badge svg.ring, .led::before, .pov-frame img, .wave b, .fire b { animation: none; }
     .fire b { transition: none; }

@@ -1,7 +1,16 @@
 # charlie-www
 Charlie Hinojosa Official Site
 
-## Music (current `index.html`)
+## BTTF nods (current `index.html`)
+
+Subtle Back to the Future touches, all built on the film's numbers and mechanics, not its logos:
+
+- **Time circuits** beside *The Timeline*: DESTINATION TIME 2026, PRESENT TIME (live: the year in view as you scroll), LAST TIME DEPARTED 1997, in a seven-segment face (DSEG7, SIL OFL, `assets/fonts`).
+- **88 mph**: a speedometer next to the timeline hint reads scroll speed. Hit 88 and twin fire trails streak across the timeline. Typing `8` `8` anywhere jumps to the timeline at 88.
+- **10.21.15**: a marker on the timeline axis at Oct 21, 2015 (hover: "Where we're going, we don't need roads.").
+- **Footer**: that line, quietly, in the legal row.
+
+## Music
 
 - The hero's flying images are now **record sleeves**: Charlie's albums *Scored, Vol. 1* and *COMING HOME (Odyssey)*, plus RAÍZ and two Sightbox Records singles. On hover a sleeve sharpens and slides its disc out; clicking drops that record onto the deck.
 - **On the deck** is the Sightbox Records picture-disc turntable, ported from `sightbox/records-www` to plain JS (`assets/deck.js`):

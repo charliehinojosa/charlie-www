@@ -11,6 +11,7 @@
   /* Concept v3: v2 (Posters 1 + 4 x Kinetic / Onmark / Wobble) plus interactions:
      focus-on-hover posters, Meta glasses POV, inline popovers, horizontal life timeline. */
   @font-face { font-family: "Anton"; font-weight: 400; font-display: swap; src: url(assets/fonts/anton-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "DSEG7"; font-weight: 700; font-display: swap; src: url(assets/fonts/DSEG7Classic-Bold.woff2) format("woff2"); }
   @font-face { font-family: "Archivo"; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; src: url(assets/fonts/archivo-latin-wdth-normal.woff2) format("woff2-variations"); }
 
   :root {
@@ -283,9 +284,31 @@
   .life strong { display: block; margin: 6px 0 8px; font-size: 15px; font-weight: 600; line-height: 1.25; }
   .life .tag { min-height: 22px; font-size: 10px; padding: 0 9px; }
   .now-pin { top: 257px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 0 6px rgba(242,84,27,.18), 0 0 20px rgba(242,84,27,.8); }
+  /* BTTF nods: DeLorean time circuits, the 10.21.15 marker, 88 mph */
+  .tl-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+  .tl-meta p { margin: 0; }
+  .circuits { display: flex; gap: 6px; padding: 7px; border-radius: 12px; background: #161615; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 12px 30px -16px rgba(0,0,0,.5); transition: box-shadow .2s; }
+  .tc { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 7px 10px 6px; border-radius: 6px; background: #080808; }
+  .tc-d { position: relative; font: 700 22px/1 "DSEG7", ui-monospace, monospace; color: var(--c); text-shadow: 0 0 8px var(--c); letter-spacing: .04em; }
+  .tc-d::before { content: attr(data-ghost); position: absolute; inset: 0; color: var(--c); opacity: .09; text-shadow: none; }
+  .tc-l { padding: 2px 6px; border-radius: 2px; background: var(--c); color: #080808; font: 700 8px/1.2 var(--text); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; }
+  .tc.dest { --c: #ff4d2e; } .tc.pres { --c: #3dff7d; } .tc.last { --c: #ffb21e; }
+  .tl.zap .circuits { box-shadow: 0 0 0 2px #e8f4ff, 0 0 40px 6px rgba(140,200,255,.7); }
+  .bttf { top: 236px; width: 0; cursor: help; }
+  .bttf em { position: absolute; left: 9px; top: 4px; font-style: normal; font-size: 10px; color: var(--ember); white-space: nowrap; }
+  .bttf i { position: absolute; left: -5px; top: 23px; width: 10px; height: 10px; transform: rotate(45deg); background: var(--page); box-shadow: inset 0 0 0 2px var(--ember); }
+  .mph { display: inline-flex; align-items: baseline; gap: 6px; }
+  .mph b { font: 700 13px/1 "DSEG7", ui-monospace, monospace; color: var(--ink); min-width: 2ch; text-align: right; }
+  .tl.zap .mph b { color: var(--ember); text-shadow: 0 0 8px var(--ember); }
+  .trails { position: absolute; left: 0; right: 0; bottom: 64px; height: 18px; overflow: hidden; pointer-events: none; }
+  .trails i { position: absolute; left: -45%; width: 45%; height: 3px; border-radius: 3px; opacity: 0; background: linear-gradient(90deg, rgba(255,122,26,0), #ff7a1a 70%, #fff1c2); box-shadow: 0 0 10px #ff7a1a, 0 0 26px rgba(242,84,27,.8); }
+  .trails i:nth-child(2) { top: 12px; }
+  .trails.go i { animation: burn 1.15s cubic-bezier(.3,.7,.2,1) forwards; }
+  .trails.go i:nth-child(2) { animation-delay: .06s; }
+  @keyframes burn { 0% { left: -45%; opacity: 0; } 8% { opacity: 1; } 75% { opacity: 1; } 100% { left: 115%; opacity: 0; } }
   .tl-progress { height: 2px; margin: 18px var(--g) 0; background: var(--rule); position: sticky; left: var(--g); }
   .tl-progress i { display: block; height: 100%; width: 0; background: var(--ember); }
-  .tl-hint { padding: 12px var(--g) 0; color: var(--ink-2); position: sticky; left: 0; }
+  .tl-hint { display: flex; justify-content: space-between; gap: 16px; padding: 12px var(--g) 0; color: var(--ink-2); position: sticky; left: 0; }
 
   /* ---------- STATEMENT ---------- */
   .statement { text-align: center; }
@@ -338,6 +361,10 @@
     .pop { width: 230px; }
     .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .track { --py: 150px; }
+    .tl-meta { align-items: flex-start; }
+    .tc { padding: 6px 7px 5px; }
+    .tc-d { font-size: 15px; }
+    .tc-l { font-size: 6.5px; letter-spacing: .1em; }
     .deck-card { grid-template-columns: minmax(0, 1fr); }
     .platter-wrap { min-height: 300px; }
     .platter-wrap::before { left: 50%; top: -260px; width: 560px; height: 560px; margin: 0 0 0 -280px; }
@@ -520,7 +547,14 @@
   <div class="tl-pin" id="tl-pin" tabindex="0" aria-label="Timeline, scroll horizontally">
     <div class="tl-head">
       <h2 id="tl-title">THE TIMELINE</h2>
-      <p class="mono">+ Career above the line · Life below · 1997 — Now</p>
+      <div class="tl-meta">
+        <p class="mono">+ Career above the line · Life below · 1997 — Now</p>
+        <div class="circuits" role="group" aria-label="Time circuits">
+          <div class="tc dest"><span class="tc-d" data-ghost="8888">2026</span><span class="tc-l">Destination time</span></div>
+          <div class="tc pres"><span class="tc-d" data-ghost="8888" id="tc-present">1997</span><span class="tc-l">Present time</span></div>
+          <div class="tc last"><span class="tc-d" data-ghost="8888">1997</span><span class="tc-l">Last time departed</span></div>
+        </div>
+      </div>
     </div>
     <div class="track" id="track">
       <span class="lane-label top mono" aria-hidden="true">Career</span>
@@ -564,9 +598,11 @@
         <li class="x life hot low" style="--x:29"><div><b>2026</b><strong>Flux Intelligence Group</strong><span class="tag">Now</span></div></li>
       </ol>
       <span class="x now-pin" style="--x:29.4" aria-hidden="true"></span>
+      <span class="x bttf" style="--x:18.8" title="Oct 21, 2015. Where we're going, we don't need roads." aria-hidden="true"><em class="mono">10.21.15</em><i></i></span>
     </div>
     <div class="tl-progress" aria-hidden="true"><i id="tl-bar"></i></div>
-    <p class="tl-hint mono" id="tl-hint">Scroll → to move through time</p>
+    <p class="tl-hint mono"><span id="tl-hint">Scroll → to move through time</span><span class="mph" aria-hidden="true"><b id="mph">00</b>MPH</span></p>
+    <div class="trails" id="trails" aria-hidden="true"><i></i><i></i></div>
   </div>
 </section>
 
@@ -593,7 +629,7 @@
   </div>
   <p class="giant" aria-hidden="true">hinojosa<span>.</span></p>
 </footer>
-<div class="legal micro"><span>© Charlie Hinojosa</span><span>Builder / Creative — Since 1999</span></div>
+<div class="legal micro"><span>© Charlie Hinojosa</span><span>Where we're going, we don't need roads.</span><span>Builder / Creative — Since 1999</span></div>
 
 <script>
 (() => {
@@ -662,15 +698,75 @@
     }
     onScroll();
   }
+  /* BTTF: PRESENT TIME follows the year in view; hit 88 mph and the fire trails light up */
+  const tcPresent = document.getElementById('tc-present');
+  const mphEl = document.getElementById('mph');
+  const trails = document.getElementById('trails');
+  const tick0 = track.querySelector('.x.tick');
+  let lastPos = 0, lastT = 0, mph = 0, cooling = false, rafMph = 0, holdUntil = 0;
+  function presentYear() {
+    const py = parseFloat(getComputedStyle(track).getPropertyValue('--py')) || 172;
+    const x0 = tick0.getBoundingClientRect().left;
+    return Math.min(2026, Math.max(1997, 1997 + Math.floor((innerWidth / 2 - x0) / py)));
+  }
+  function showMph() { mphEl.textContent = String(Math.min(99, Math.round(mph))).padStart(2, '0'); }
+  function decay() {
+    if (performance.now() < holdUntil) { rafMph = requestAnimationFrame(decay); return; }   // hold 88 while the trails burn
+    mph *= 0.9;
+    if (mph < 0.5) mph = 0;
+    showMph();
+    rafMph = mph > 0 ? requestAnimationFrame(decay) : 0;
+  }
+  function fire() {
+    if (cooling) return;
+    cooling = true;
+    mph = 88; showMph();
+    holdUntil = performance.now() + 1200;
+    if (!rafMph) rafMph = requestAnimationFrame(decay);
+    sec.classList.add('zap');
+    if (!reduce) { trails.classList.remove('go'); void trails.offsetWidth; trails.classList.add('go'); }
+    setTimeout(() => sec.classList.remove('zap'), 700);
+    setTimeout(() => { cooling = false; }, 3000);
+  }
+  function measure(pos) {
+    const now = performance.now();
+    if (lastT) {
+      const dt = Math.max(16, now - lastT);
+      const v = Math.abs(pos - lastPos) / dt * 1000;   // px per second
+      if (now >= holdUntil) {
+        mph = Math.max(mph, Math.min(88, v / 30));      // ~2,640 px/s is 88 mph, and 88 is the top
+        showMph();
+        if (mph >= 88) fire();
+      }
+      if (!rafMph) rafMph = requestAnimationFrame(decay);
+    }
+    lastPos = pos; lastT = now;
+    tcPresent.textContent = presentYear();
+  }
+  // Hidden: type 8-8 anywhere to jump to the timeline at 88 mph
+  let lastEight = 0;
+  addEventListener('keydown', (e) => {
+    if (e.key !== '8' || e.metaKey || e.ctrlKey || e.altKey || /input|textarea|select/i.test(e.target.tagName) || e.target.isContentEditable) return;
+    const now = performance.now();
+    if (now - lastEight < 700) {
+      lastEight = 0;
+      sec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      setTimeout(fire, reduce ? 0 : 700);
+    } else lastEight = now;
+  });
+
   function onScroll() {
     if (sec.classList.contains('pinned')) {
       const travel = Math.max(0, track.scrollWidth - innerWidth);
       const p = Math.min(1, Math.max(0, -sec.getBoundingClientRect().top / Math.max(1, sec.offsetHeight - innerHeight)));
       track.style.transform = 'translateX(' + (-p * travel) + 'px)';
       bar.style.width = (p * 100) + '%';
+      if (p > 0 && p < 1) measure(p * travel);
+      else tcPresent.textContent = presentYear();
     } else {
       const max = pin.scrollWidth - pin.clientWidth;
       bar.style.width = (max > 0 ? pin.scrollLeft / max * 100 : 0) + '%';
+      measure(pin.scrollLeft);
     }
   }
   addEventListener('scroll', onScroll, { passive: true });

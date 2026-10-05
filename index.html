@@ -53,22 +53,23 @@
   .hero { position: relative; margin: 8px; height: calc(100svh - 16px); min-height: 680px; max-height: 980px; border-radius: var(--r); overflow: hidden; background: var(--card); isolation: isolate; }
   .stage { position: absolute; inset: 0; transition: transform .7s var(--ease), filter .7s var(--ease); transform-origin: var(--ox, 50%) var(--oy, 20%); }
   .hero.warp .stage { transform: scale(7); filter: blur(6px) brightness(1.4); }
-  .halftone { position: absolute; inset: 0; z-index: 0; background: radial-gradient(rgba(15,15,14,.16) 1px, transparent 1.3px) 0 0 / 6px 6px; -webkit-mask: radial-gradient(ellipse at 50% 55%, transparent 25%, #000 85%); mask: radial-gradient(ellipse at 50% 55%, transparent 25%, #000 85%); }
+  .halftone { position: absolute; inset: 0; z-index: 0; background: radial-gradient(rgba(15,15,14,.07) 1px, transparent 1.3px) 0 0 / 6px 6px; -webkit-mask: radial-gradient(ellipse at 50% 55%, transparent 45%, #000 95%); mask: radial-gradient(ellipse at 50% 55%, transparent 45%, #000 95%); }
 
-  .tunnel { position: absolute; inset: 0; z-index: 1; perspective: 520px; pointer-events: none; }
-  .tunnel .plane { position: absolute; left: -30%; right: -30%; height: 52%; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--display); font-size: clamp(64px, 9vw, 150px); line-height: .9; color: var(--tunnel); white-space: nowrap; text-align: center; letter-spacing: .01em; }
+  /* Calmer tunnel: solid tone-on-tone rows only, three per plane */
+  .tunnel { position: absolute; inset: 0; z-index: 0; perspective: 520px; pointer-events: none; }
+  .tunnel .plane { position: absolute; left: -30%; right: -30%; height: 52%; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--display); font-size: clamp(64px, 9vw, 150px); line-height: .9; color: #e3e2de; white-space: nowrap; text-align: center; letter-spacing: .01em; }
   .tunnel .ceil { top: -6%; transform-origin: 50% 100%; transform: rotateX(-58deg); }
   .tunnel .floor { bottom: -6%; transform-origin: 50% 0; transform: rotateX(58deg); }
-  .tunnel .plane span:nth-child(odd) { color: transparent; -webkit-text-stroke: 1.5px #f6f5f2; }
+  .tunnel .plane span:nth-child(4) { display: none; }
 
-  .wordmark { position: absolute; z-index: 2; left: 0; right: 0; top: 47%; margin: 0; text-align: center; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 26vw; line-height: .8; letter-spacing: .005em; transform: translateY(-50%) scaleY(1.12);
+  /* Solid ink wordmark with an ember motion echo trailing left (the Kinetic streak) */
+  .wordmark { position: absolute; z-index: 2; left: 0; right: 0; top: 47%; margin: 0; text-align: center; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 24vw; line-height: .8; letter-spacing: .005em; transform: translateY(-50%) scaleY(1.12); pointer-events: none;
     color: var(--ink);
-    background: linear-gradient(rgba(15,15,14,.62), rgba(15,15,14,.82)), url(assets/builder-blur.jpg) 50% 50% / cover;
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    text-shadow: -.05em 0 .06em rgba(242,84,27,.26), -.11em 0 .12em rgba(242,84,27,.13), -.18em 0 .2em rgba(242,84,27,.06); }
 
   /* Flying record sleeves (the music): blurred in flight, snap into focus on hover and
      slide their disc out; clicking drops the record on the deck below. */
-  .fly { position: absolute; z-index: 3; width: clamp(110px, 12vw, 190px); padding: 0; border: 0; background: none; cursor: pointer; isolation: isolate;
+  .fly { position: absolute; z-index: 1; width: clamp(110px, 12vw, 190px); padding: 0; border: 0; background: none; cursor: pointer; isolation: isolate;
     transition: filter .45s var(--ease), transform .45s var(--ease); --dir: 1; }
   .fly img { position: relative; z-index: 1; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; box-shadow: 0 30px 50px -20px rgba(0,0,0,.4); }
   .fly .disc { position: absolute; z-index: 0; inset: 3%; border-radius: 50%; transition: transform .5s var(--ease);
@@ -320,7 +321,7 @@
     .nav .pill.talk { display: none; }
     .hero { height: auto; max-height: none; min-height: 0; }
     .stage { position: relative; height: 132vw; max-height: 640px; }
-    .wordmark { top: 50%; font-size: 26vw; }
+    .wordmark { top: 50%; font-size: 24vw; }
     .figure { height: 74%; }
     .ghost { height: 70%; }
     .fly.a { top: 56%; left: 3%; }
@@ -401,7 +402,7 @@
   </div>
 
   <div class="intro">
-    <h2>Builder. Creative.<br><span class="mute">Founder of Sightbox Studios™</span></h2>
+    <h2>Builder. Creative.<br><span class="mute">Founder of Sightbox®</span></h2>
     <a class="pill light" href="#work"><span class="thumb" aria-hidden="true"></span>See the timeline</a>
     <div class="socials">
       <a class="circle" href="https://instagram.com/charliehinojosa" target="_blank" rel="noopener" aria-label="Instagram, @charliehinojosa">IG</a>

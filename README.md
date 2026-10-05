@@ -10,7 +10,8 @@ Subtle Back to the Future touches, all built on the film's numbers and mechanics
 - **10.21.15**: a marker on the timeline axis at Oct 21, 2015 (hover: "Where we're going, we don't need roads.").
 - **Footer**: that line, quietly, in the legal row.
 - **Hero**: Charlie sits on the plutonium case in Marty's white '85 Nike Bruins, re-rendered as a straight, unretouched-looking photo. He stays B&W; only the case and the red swooshes keep their color (`assets/charlie-cutout.webp`, trail `charlie-trail-v2.webp`).
-- **Suit up**: hover the figure (the silhouette itself, alpha hit-tested; tap on touch) and he morphs into the *COMING HOME (Odyssey)* avatar: yellow radiation suit, Sony Walkman held up, the same white Nike Bruins, same pose on the same case (`assets/charlie-hazmat-cutout.webp`, same crop so the two overlay exactly). The reveal opens from the cursor. Hovering the glasses LED keeps Charlie, so the Meta POV still works.
+- **Suit up**: hover the figure (the silhouette itself, alpha hit-tested; tap on touch) and he morphs into the *COMING HOME (Odyssey)* avatar: yellow radiation suit, Sony Walkman held up, the same white Nike Bruins, same pose on the same case (`assets/charlie-hazmat-cutout.webp`, same crop so the two overlay exactly). The reveal opens from the cursor. Hovering the glasses LED keeps Charlie, so the Meta POV still works; the LED (on the frame's corner rivet) is hidden on the avatar, who has no glasses.
+- **Fire trails**: the hero's BUILDER tunnel is gone. In its place, on the same tilted floor plane, are the DeLorean's twin fire trails right after it jumps: burning lines that ignite from under Charlie toward the horizon, with 3D sheets of flame (SVG-noise masks) flickering up off them. Static under reduced motion.
 
 ## Music
 

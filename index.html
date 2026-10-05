@@ -56,12 +56,27 @@
   .hero.warp .stage { transform: scale(7); filter: blur(6px) brightness(1.4); }
   .halftone { position: absolute; inset: 0; z-index: 0; background: radial-gradient(rgba(15,15,14,.07) 1px, transparent 1.3px) 0 0 / 6px 6px; -webkit-mask: radial-gradient(ellipse at 50% 55%, transparent 45%, #000 95%); mask: radial-gradient(ellipse at 50% 55%, transparent 45%, #000 95%); }
 
-  /* Calmer tunnel: solid tone-on-tone rows only, three per plane */
+  /* BTTF: the DeLorean's fire trails, burning away from us on the same tilted floor plane (the car just left for the future).
+     Flat burning lines on the floor, plus a standing sheet of flame on each (rotated up out of the floor in 3D). */
   .tunnel { position: absolute; inset: 0; z-index: 0; perspective: 520px; pointer-events: none; }
-  .tunnel .plane { position: absolute; left: -30%; right: -30%; height: 52%; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--display); font-size: clamp(64px, 9vw, 150px); line-height: .9; color: #e3e2de; white-space: nowrap; text-align: center; letter-spacing: .01em; }
-  .tunnel .ceil { top: -6%; transform-origin: 50% 100%; transform: rotateX(-58deg); }
-  .tunnel .floor { bottom: -6%; transform-origin: 50% 0; transform: rotateX(58deg); }
-  .tunnel .plane span:nth-child(4) { display: none; }
+  .tunnel .floor { position: absolute; left: -30%; right: -30%; bottom: -6%; height: 52%; transform-origin: 50% 0; transform: rotateX(58deg); transform-style: preserve-3d; }
+  .fire { position: absolute; top: 0; bottom: 0; width: .55%; transform: translateX(-50%); transform-style: preserve-3d; }
+  .fire.l { left: 41.5%; } .fire.r { left: 58.5%; }
+  .fire b { position: absolute; top: 0; bottom: 0; clip-path: inset(100% 0 0 0); animation: ignite 1.6s .35s cubic-bezier(.25,.7,.2,1) forwards; -webkit-mask: linear-gradient(to bottom, transparent, #000 30%); mask: linear-gradient(to bottom, transparent, #000 30%); }
+  .fire .scorch { left: -500%; right: -500%; background: linear-gradient(90deg, transparent, rgba(40,30,25,.09) 35%, rgba(40,30,25,.15) 50%, rgba(40,30,25,.09) 65%, transparent); filter: blur(5px); }
+  .fire .glow { left: -1400%; right: -1400%; background: radial-gradient(closest-side, rgba(255,150,50,.55), rgba(255,110,30,.22) 55%, transparent) 0 0 / 100% 18%; background-repeat: repeat-y; filter: blur(14px); animation: ignite 1.6s .35s cubic-bezier(.25,.7,.2,1) forwards, glow 1.9s ease-in-out 2s infinite alternate; }
+  .fire .core { left: 0; right: 0; border-radius: 40%; background: linear-gradient(90deg, rgba(214,44,10,0), #e2400f 18%, #ff8a2a 34%, #fff1c8 50%, #ff8a2a 66%, #e2400f 82%, rgba(214,44,10,0)); box-shadow: 0 0 10px rgba(255,106,26,.95), 0 0 30px rgba(242,84,27,.55); }
+  .fire .flame { left: 50%; width: 850%; transform-origin: 0 50%; transform: rotateY(-90deg);
+    background: linear-gradient(90deg, #fff6dc, #ffc04d 16%, #ff7a1a 42%, #d9310c 72%, rgba(217,49,12,0));
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='320'%3E%3Cfilter id='n' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.018 0.07' numOctaves='3' seed='8' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 3.2 0 0 0 -1.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") 0 0 / 160px 320px, linear-gradient(90deg, #000 10%, transparent), linear-gradient(to bottom, transparent, #000 30%);
+    -webkit-mask-composite: source-in, source-in; mask-composite: intersect;
+    filter: blur(.6px) drop-shadow(0 0 6px rgba(255,120,30,.7));
+    animation: ignite 1.6s .35s cubic-bezier(.25,.7,.2,1) forwards, rise .9s linear infinite; }
+  .fire.l .flame { transform: rotateY(-72deg); }
+  .fire.r .flame { transform: rotateY(-108deg); animation-duration: 1.6s, 1.05s; }
+  @keyframes ignite { to { clip-path: inset(0 0 0 0); } }
+  @keyframes rise { to { -webkit-mask-position: 160px 0, 0 0, 0 0; mask-position: 160px 0, 0 0, 0 0; } }
+  @keyframes glow { from { opacity: .7; } to { opacity: 1; } }
 
   /* Solid ink wordmark with an ember motion echo trailing left (the Kinetic streak) */
   .wordmark { position: absolute; z-index: 2; left: 0; right: 0; top: 47%; margin: 0; text-align: center; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 24vw; line-height: .8; letter-spacing: .005em; transform: translateY(-50%) scaleY(1.12); pointer-events: none;
@@ -100,13 +115,13 @@
   .figure.suited .suit { clip-path: circle(150% at var(--mx, 50%) var(--my, 40%)); filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
   .figure.suited .me { filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)) brightness(1.8) blur(2px); opacity: 0; }
   .figure .led, .figure .led-tip { transition: opacity .3s; }
-  .figure.suited .led::before { opacity: 0; }
-  .led { position: absolute; left: 49%; top: 9.5%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
+  .figure.suited .led, .figure.suited .led-tip { opacity: 0; }
+  .led { position: absolute; left: 49.7%; top: 10%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
   .led::before { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px 2px #fff, 0 0 16px 6px rgba(255,255,255,.75); animation: blink 1.6s steps(1, end) infinite; }
   .led::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; border: 1px solid rgba(255,255,255,.0); transition: border-color .2s; }
   .led:hover::after, .led:focus-visible::after { border-color: rgba(255,255,255,.9); }
   .led:focus-visible { outline: none; }
-  .led-tip { position: absolute; left: calc(49% + 26px); top: calc(9.5% - 14px); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--ink); color: #f6f5f2; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; pointer-events: none; }
+  .led-tip { position: absolute; left: calc(49.7% + 26px); top: calc(10% - 14px); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--ink); color: #f6f5f2; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; pointer-events: none; }
   .led:hover + .led-tip, .led:focus-visible + .led-tip { opacity: 1; transform: none; }
   @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .08; } }
 
@@ -338,7 +353,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .badge svg.ring, .led::before, .pov-frame img, .wave b { animation: none; }
+    .badge svg.ring, .led::before, .pov-frame img, .wave b, .fire b { animation: none; }
+    .fire b { clip-path: none; }
     .stage, .fly { transition: none; }
   }
 
@@ -355,6 +371,8 @@
     .fly.a { top: 56%; left: 3%; }
     .fly.b { top: 20%; right: 3%; }
     .fly.c { right: auto; bottom: auto; left: 6%; top: 21%; width: 64px; }
+    .fire.l { left: 33%; } .fire.r { left: 67%; }
+    .fire { width: .8%; }
     .fly .cap { display: none; }
     .led-tip { display: none; }
     .topnotes { top: 74px; font-size: 12px; }
@@ -411,8 +429,7 @@
   <div class="stage">
     <div class="halftone" aria-hidden="true"></div>
     <div class="tunnel" aria-hidden="true">
-      <div class="plane ceil"><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span></div>
-      <div class="plane floor"><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span></div>
+      <div class="floor"><i class="fire l"><b class="scorch"></b><b class="glow"></b><b class="core"></b><b class="flame"></b></i><i class="fire r"><b class="scorch"></b><b class="glow"></b><b class="core"></b><b class="flame"></b></i></div>
     </div>
     <h1 class="wordmark" aria-label="Charlie Hinojosa">CHARLIE</h1>
     <button class="fly a" type="button" data-deck="scored" style="--label:#EFE9DA" aria-label="Scored, Vol. 1 by Charlie Hinojosa. Put it on the deck"><span class="disc"></span><img src="assets/covers/scored-vol-1.jpg" alt=""><span class="cap" aria-hidden="true"><b>Scored, Vol. 1</b>Charlie Hinojosa · LP</span></button>

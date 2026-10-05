@@ -114,8 +114,10 @@
   .ghost.me-trail, .ghost.suit-trail { transition: opacity .6s; }
 
   /* Figure + Meta Ray-Ban capture LED */
-  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 1036 / 1400; transform: translateX(-50%); pointer-events: none; }
-  .figure img { width: 100%; height: 100%; max-width: none; filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
+  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 1096 / 1400; transform: translateX(-50%); pointer-events: none; }
+  .figure img { width: 100%; height: 100%; max-width: none; }
+  /* shadow on the wrapper, not the masked images (a masked drop-shadow gets cropped into a hard grey slab) */
+  .figure .shadowed { position: absolute; inset: 0; filter: drop-shadow(0 10px 16px rgba(0,0,0,.14)); }
   /* Hover the figure: Charlie morphs into his Odyssey avatar (hazmat suit + Walkman), revealed from the cursor */
   /* Suit up: the costume drops over him head-to-toe (soft wipe + a small settle) and lifts back off. Head, shoes and case are
      registered pixel-for-pixel between the two cutouts, so only the suit itself moves. */
@@ -451,8 +453,10 @@
     <img class="ghost me-trail" src="assets/charlie-trail-v2.webp" alt="" aria-hidden="true">
     <img class="ghost suit-trail" src="assets/charlie-hazmat-trail.webp" alt="" aria-hidden="true">
     <div class="figure">
+      <div class="shadowed">
       <img class="me" src="assets/charlie-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa wearing Ray-Ban Meta glasses and white 1985 Nike sneakers with red swooshes, seated on the yellow Back to the Future plutonium case, shown in full color, his left hand on top showing a black wedding band. Hover to morph into his music avatar: a figure in a yellow radiation suit and the same white Nikes, holding up a Sony Walkman.">
       <img class="suit" src="assets/charlie-hazmat-cutout.webp" alt="" aria-hidden="true">
+      </div>
       <button class="led" type="button" id="led" aria-haspopup="dialog" aria-controls="pov"><span class="sr">See through Charlie's Ray-Ban Meta glasses</span></button>
       <span class="led-tip" aria-hidden="true">“Hey Meta, record”</span>
     </div>

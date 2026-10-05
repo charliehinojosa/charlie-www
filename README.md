@@ -9,6 +9,7 @@ Subtle Back to the Future touches, all built on the film's numbers and mechanics
 - **88 mph**: a speedometer next to the timeline hint reads scroll speed. Hit 88 and twin fire trails streak across the timeline. Typing `8` `8` anywhere jumps to the timeline at 88.
 - **10.21.15**: a marker on the timeline axis at Oct 21, 2015 (hover: "Where we're going, we don't need roads.").
 - **Footer**: that line, quietly, in the legal row.
+- **Hero**: Charlie sits on the plutonium case in Marty's white '85 Nike Bruins. He stays B&W; only the case and the red swooshes keep their color (`assets/charlie-bruins-cutout.webp` + `charlie-bruins-trail.webp`). The previous shoes are in `assets/charlie-bw-cutout.webp` + `charlie-trail.webp`. To switch back, point the two hero `<img>`s at those and set `.figure` to `aspect-ratio: 1016 / 1400` and `.led` / `.led-tip` to `49.5%` / `9.1%`.
 
 ## Music
 

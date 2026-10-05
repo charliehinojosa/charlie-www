@@ -25,10 +25,8 @@
     { id: 't4', group: 'raiz', title: 'I Speak Jesus', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:18', src: 'assets/audio/raiz-i-speak-jesus-radio.mp3' },
     { id: 't5', group: 'raiz', title: 'So Low', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:16', src: 'assets/audio/raiz-so-low-radio.mp3' },
     { id: 't6', group: 'raiz', title: '3:33', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:32', src: 'assets/audio/raiz-333-radio.mp3' },
-    { id: 'american-meme', group: 'label', title: 'The American Meme', artist: 'Valentine Michael Smith', release: 'Single', cover: 'assets/covers/the-american-meme.jpg', spotify: 'https://open.spotify.com/artist/5WJ3CQmj7CJBixt22qGv3Q' },
-    { id: 'golden-hour', group: 'label', title: 'Golden Hour', artist: 'Valentine Michael Smith', release: 'Single', cover: 'assets/covers/golden-hour.jpg', spotify: 'https://open.spotify.com/artist/5WJ3CQmj7CJBixt22qGv3Q' },
   ];
-  const GROUPS = { by: 'By Charlie · on Spotify', raiz: 'RAÍZ · new album samples', label: 'From Sightbox Records' };
+  const GROUPS = { by: 'By Charlie · on Spotify', raiz: 'RAÍZ · new album samples' };
   const PLAYABLE = TRACKS.map((t, i) => (t.src ? i : -1)).filter((i) => i >= 0);
 
   const $ = (id) => document.getElementById(id);

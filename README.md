@@ -9,11 +9,12 @@ Subtle Back to the Future touches, all built on the film's numbers and mechanics
 - **88 mph**: a speedometer next to the timeline hint reads scroll speed. Hit 88 and twin fire trails streak across the timeline. Typing `8` `8` anywhere jumps to the timeline at 88.
 - **10.21.15**: a marker on the timeline axis at Oct 21, 2015 (hover: "Where we're going, we don't need roads.").
 - **Footer**: that line, quietly, in the legal row.
-- **Hero**: Charlie sits on the plutonium case in Marty's white '85 Nike Bruins. He stays B&W; only the case and the red swooshes keep their color (`assets/charlie-bruins-cutout.webp` + `charlie-bruins-trail.webp`). The previous shoes are in `assets/charlie-bw-cutout.webp` + `charlie-trail.webp`. To switch back, point the two hero `<img>`s at those and set `.figure` to `aspect-ratio: 1016 / 1400` and `.led` / `.led-tip` to `49.5%` / `9.1%`.
+- **Hero**: Charlie sits on the plutonium case in Marty's white '85 Nike Bruins, re-rendered as a straight, unretouched-looking photo. He stays B&W; only the case and the red swooshes keep their color (`assets/charlie-cutout.webp`, trail `charlie-trail-v2.webp`).
+- **Suit up**: hover the figure (the silhouette itself, alpha hit-tested; tap on touch) and he morphs into the *COMING HOME (Odyssey)* avatar: yellow radiation suit, Sony Walkman held up, same pose on the same case (`assets/charlie-hazmat-cutout.webp`, same crop so the two overlay exactly). The reveal opens from the cursor. Hovering the glasses LED keeps Charlie, so the Meta POV still works.
 
 ## Music
 
-- The hero's flying images are now **record sleeves**: Charlie's albums *Scored, Vol. 1* and *COMING HOME (Odyssey)*, plus RAÍZ and two Sightbox Records singles. On hover a sleeve sharpens and slides its disc out; clicking drops that record onto the deck.
+- The hero's flying images are now **record sleeves**: Charlie's albums *Scored, Vol. 1* and *COMING HOME (Odyssey)*, plus RAÍZ. On hover a sleeve sharpens and slides its disc out; clicking drops that record onto the deck.
 - **On the deck** is the Sightbox Records picture-disc turntable, ported from `sightbox/records-www` to plain JS (`assets/deck.js`):
   - `TurntableEngine` ← `lib/playback/turntable.ts`, with `assets/turntable-worklet.js` copied verbatim. Dragging the record scratches the real track (100°/s = 1×; still = silent; backwards plays in reverse).
   - `ElementEngine` ← `lib/playback/audio.ts` is the fallback where AudioWorklet is missing.

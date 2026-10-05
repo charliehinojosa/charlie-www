@@ -82,8 +82,6 @@
   .fly.a { left: 5%; top: 31%; transform: rotate(-14deg) skewY(3deg); filter: blur(2px); width: clamp(130px, 13vw, 200px); }
   .fly.b { right: 5%; top: 17%; transform: rotate(12deg); filter: blur(3px); width: clamp(110px, 11vw, 170px); --dir: -1; }
   .fly.c { right: 10%; bottom: 12%; transform: rotate(-7deg); filter: blur(1.2px); width: clamp(96px, 9.5vw, 150px); --dir: -1; }
-  .fly.d { left: 21%; top: 12%; transform: rotate(9deg); filter: blur(5px); width: clamp(64px, 6vw, 96px); }
-  .fly.e { right: 27%; top: 9%; transform: rotate(-11deg); filter: blur(6px); width: clamp(60px, 5.4vw, 88px); --dir: -1; }
   .fly:hover, .fly:focus-visible { z-index: 8; filter: none; transform: rotate(-3deg) scale(1.45); outline: none; }
   .fly:hover .disc, .fly:focus-visible .disc { transform: translateX(calc(var(--dir) * 46%)) rotate(calc(var(--dir) * 200deg)); }
   .fly:hover .cap, .fly:focus-visible .cap { opacity: 1; transform: translate(-50%, 0); }
@@ -94,14 +92,21 @@
   .ghost { position: absolute; z-index: 3; bottom: 0; left: 50%; height: 72%; width: auto; max-width: none; transform: translateX(-74%); opacity: .45; pointer-events: none; }
 
   /* Figure + Meta Ray-Ban capture LED */
-  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 1038 / 1400; transform: translateX(-50%); pointer-events: none; }
+  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 1036 / 1400; transform: translateX(-50%); pointer-events: none; }
   .figure img { width: 100%; height: 100%; max-width: none; filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
-  .led { position: absolute; left: 49.2%; top: 9.2%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
+  /* Hover the figure: Charlie morphs into his Odyssey avatar (hazmat suit + Walkman), revealed from the cursor */
+  .figure .suit { position: absolute; inset: 0; clip-path: circle(0% at var(--mx, 50%) var(--my, 40%)); transition: clip-path .75s cubic-bezier(.7,0,.2,1), filter .75s; filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)) brightness(1.6) saturate(.4); }
+  .figure .me { transition: filter .75s, opacity .75s; }
+  .figure.suited .suit { clip-path: circle(150% at var(--mx, 50%) var(--my, 40%)); filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
+  .figure.suited .me { filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)) brightness(1.8) blur(2px); opacity: 0; }
+  .figure .led, .figure .led-tip { transition: opacity .3s; }
+  .figure.suited .led::before { opacity: 0; }
+  .led { position: absolute; left: 49%; top: 9.5%; width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; }
   .led::before { content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px 2px #fff, 0 0 16px 6px rgba(255,255,255,.75); animation: blink 1.6s steps(1, end) infinite; }
   .led::after { content: ""; position: absolute; inset: 8px; border-radius: 50%; border: 1px solid rgba(255,255,255,.0); transition: border-color .2s; }
   .led:hover::after, .led:focus-visible::after { border-color: rgba(255,255,255,.9); }
   .led:focus-visible { outline: none; }
-  .led-tip { position: absolute; left: calc(49.2% + 26px); top: calc(9.2% - 14px); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--ink); color: #f6f5f2; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; pointer-events: none; }
+  .led-tip { position: absolute; left: calc(49% + 26px); top: calc(9.5% - 14px); white-space: nowrap; padding: 6px 10px; border-radius: 999px; background: var(--ink); color: #f6f5f2; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; opacity: 0; transform: translateX(-6px); transition: opacity .25s, transform .25s; pointer-events: none; }
   .led:hover + .led-tip, .led:focus-visible + .led-tip { opacity: 1; transform: none; }
   @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: .08; } }
 
@@ -349,7 +354,7 @@
     .ghost { height: 70%; }
     .fly.a { top: 56%; left: 3%; }
     .fly.b { top: 20%; right: 3%; }
-    .fly.c, .fly.d, .fly.e { display: none; }
+    .fly.c { right: auto; bottom: auto; left: 6%; top: 21%; width: 64px; }
     .fly .cap { display: none; }
     .led-tip { display: none; }
     .topnotes { top: 74px; font-size: 12px; }
@@ -413,12 +418,11 @@
     <button class="fly a" type="button" data-deck="scored" style="--label:#EFE9DA" aria-label="Scored, Vol. 1 by Charlie Hinojosa. Put it on the deck"><span class="disc"></span><img src="assets/covers/scored-vol-1.jpg" alt=""><span class="cap" aria-hidden="true"><b>Scored, Vol. 1</b>Charlie Hinojosa · LP</span></button>
     <button class="fly b" type="button" data-deck="coming-home" style="--label:#3296FF" aria-label="COMING HOME (Odyssey) by Charlie Hinojosa. Put it on the deck"><span class="disc"></span><img src="assets/covers/coming-home-odyssey.jpg" alt=""><span class="cap" aria-hidden="true"><b>COMING HOME (Odyssey)</b>Charlie Hinojosa · LP</span></button>
     <button class="fly c" type="button" data-deck="t1" style="--label:#E8553A" aria-label="RAÍZ, new on Sightbox Records. Play it on the deck"><span class="disc"></span><img src="assets/covers/raiz.jpg" alt=""><span class="cap" aria-hidden="true"><b>RAÍZ</b>New on Sightbox Records · ▶ play</span></button>
-    <button class="fly d" type="button" data-deck="american-meme" aria-label="The American Meme, Sightbox Records. Put it on the deck"><span class="disc"></span><img src="assets/covers/the-american-meme.jpg" alt=""><span class="cap" aria-hidden="true"><b>The American Meme</b>Sightbox Records · Single</span></button>
-    <button class="fly e" type="button" data-deck="golden-hour" style="--dir:-1" aria-label="Golden Hour, Sightbox Records. Put it on the deck"><span class="disc"></span><img src="assets/covers/golden-hour.jpg" alt=""><span class="cap" aria-hidden="true"><b>Golden Hour</b>Sightbox Records · Single</span></button>
     <div class="streak" aria-hidden="true"></div>
-    <img class="ghost" src="assets/charlie-bruins-trail.webp" alt="" aria-hidden="true">
+    <img class="ghost" src="assets/charlie-trail-v2.webp" alt="" aria-hidden="true">
     <div class="figure">
-      <img src="assets/charlie-bruins-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa wearing Ray-Ban Meta glasses, seated on the yellow Back to the Future plutonium case, shown in full color, his left hand on top showing a black wedding band, in white 1985 Nike sneakers with red swooshes.">
+      <img class="me" src="assets/charlie-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa wearing Ray-Ban Meta glasses and white 1985 Nike sneakers with red swooshes, seated on the yellow Back to the Future plutonium case, shown in full color, his left hand on top showing a black wedding band. Hover to morph into his music avatar: a figure in a yellow radiation suit holding up a Sony Walkman.">
+      <img class="suit" src="assets/charlie-hazmat-cutout.webp" alt="" aria-hidden="true">
       <button class="led" type="button" id="led" aria-haspopup="dialog" aria-controls="pov"><span class="sr">See through Charlie's Ray-Ban Meta glasses</span></button>
       <span class="led-tip" aria-hidden="true">“Hey Meta, record”</span>
     </div>
@@ -675,6 +679,48 @@
   document.getElementById('pov-close').addEventListener('click', () => pov.close());
   pov.addEventListener('close', () => { closePov(); led.focus(); });
   pov.addEventListener('click', e => { if (e.target === pov) pov.close(); });
+
+  /* Figure morph: over the silhouette (alpha hit-test, not the bounding box), Charlie becomes the hazmat avatar.
+     The LED stays Charlie so the glasses remain clickable; touch toggles on tap. */
+  const fig = hero.querySelector('.figure');
+  const hit = { w: 0, h: 0, a: null };
+  const mimg = new Image();
+  mimg.onload = () => {
+    const c = document.createElement('canvas');
+    c.width = hit.w = 130; c.height = hit.h = 175;
+    const x = c.getContext('2d', { willReadFrequently: true }); x.drawImage(mimg, 0, 0, c.width, c.height);
+    hit.a = x.getImageData(0, 0, c.width, c.height).data;
+  };
+  mimg.src = fig.querySelector('.me').src;
+  const overBody = (r, cx, cy) => {
+    if (!hit.a) return false;
+    const u = (cx - r.left) / r.width, v = (cy - r.top) / r.height;
+    if (u < 0 || u >= 1 || v < 0 || v >= 1) return false;
+    return hit.a[(Math.floor(v * hit.h) * hit.w + Math.floor(u * hit.w)) * 4 + 3] > 110;
+  };
+  let suitTimer = 0;
+  function setSuited(on, r, cx, cy) {
+    if (on === fig.classList.contains('suited')) return;
+    if (r) {
+      fig.style.setProperty('--mx', ((cx - r.left) / r.width * 100).toFixed(1) + '%');
+      fig.style.setProperty('--my', ((cy - r.top) / r.height * 100).toFixed(1) + '%');
+    }
+    fig.classList.toggle('suited', on);
+  }
+  hero.addEventListener('pointermove', e => {
+    if (e.pointerType === 'touch') return;
+    const r = fig.getBoundingClientRect();
+    const on = overBody(r, e.clientX, e.clientY) && !led.contains(e.target);
+    clearTimeout(suitTimer);
+    if (on) suitTimer = setTimeout(() => setSuited(true, r, e.clientX, e.clientY), 120);
+    else setSuited(false, r, e.clientX, e.clientY);
+  });
+  hero.addEventListener('pointerleave', () => { clearTimeout(suitTimer); setSuited(false); });
+  hero.addEventListener('pointerup', e => {
+    if (e.pointerType !== 'touch' || led.contains(e.target)) return;
+    const r = fig.getBoundingClientRect();
+    if (overBody(r, e.clientX, e.clientY)) setSuited(!fig.classList.contains('suited'), r, e.clientX, e.clientY);
+  });
 
   /* Timeline: pin the section and drive it sideways with vertical scroll on wide screens */
   const sec = document.getElementById('work');

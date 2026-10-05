@@ -107,6 +107,11 @@
 
   .streak { position: absolute; z-index: 3; left: 24%; bottom: 24%; width: 30%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,130,70,.95), rgba(242,84,27,.55) 50%, rgba(242,84,27,0)); filter: blur(14px); opacity: .9; pointer-events: none; }
   .ghost { position: absolute; z-index: 3; bottom: 0; left: 50%; height: 72%; width: auto; max-width: none; transform: translateX(-74%); opacity: .45; pointer-events: none; }
+  /* the trail swaps with the figure, so no trace of the other look is left behind */
+  .ghost.suit-trail { opacity: 0; }
+  .hero.suited .ghost.me-trail { opacity: 0; }
+  .hero.suited .ghost.suit-trail { opacity: .45; }
+  .ghost.me-trail, .ghost.suit-trail { transition: opacity .6s; }
 
   /* Figure + Meta Ray-Ban capture LED */
   .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; aspect-ratio: 1036 / 1400; transform: translateX(-50%); pointer-events: none; }
@@ -443,7 +448,8 @@
     <button class="fly b" type="button" data-deck="coming-home" style="--label:#3296FF" aria-label="COMING HOME (Odyssey) by Charlie Hinojosa. Put it on the deck"><span class="disc"></span><img src="assets/covers/coming-home-odyssey.jpg" alt=""><span class="cap" aria-hidden="true"><b>COMING HOME (Odyssey)</b>Charlie Hinojosa · LP</span></button>
     <button class="fly c" type="button" data-deck="t1" style="--label:#E8553A" aria-label="RAÍZ, new on Sightbox Records. Play it on the deck"><span class="disc"></span><img src="assets/covers/raiz.jpg" alt=""><span class="cap" aria-hidden="true"><b>RAÍZ</b>New on Sightbox Records · ▶ play</span></button>
     <div class="streak" aria-hidden="true"></div>
-    <img class="ghost" src="assets/charlie-trail-v2.webp" alt="" aria-hidden="true">
+    <img class="ghost me-trail" src="assets/charlie-trail-v2.webp" alt="" aria-hidden="true">
+    <img class="ghost suit-trail" src="assets/charlie-hazmat-trail.webp" alt="" aria-hidden="true">
     <div class="figure">
       <img class="me" src="assets/charlie-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa wearing Ray-Ban Meta glasses and white 1985 Nike sneakers with red swooshes, seated on the yellow Back to the Future plutonium case, shown in full color, his left hand on top showing a black wedding band. Hover to morph into his music avatar: a figure in a yellow radiation suit and the same white Nikes, holding up a Sony Walkman.">
       <img class="suit" src="assets/charlie-hazmat-cutout.webp" alt="" aria-hidden="true">

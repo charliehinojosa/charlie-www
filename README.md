@@ -10,7 +10,7 @@ Subtle Back to the Future touches, all built on the film's numbers and mechanics
 - **10.21.15**: a marker on the timeline axis at Oct 21, 2015 (hover: "Where we're going, we don't need roads.").
 - **Footer**: that line, quietly, in the legal row.
 - **Hero**: Charlie sits on the plutonium case in Marty's white '85 Nike Bruins, re-rendered as a straight, unretouched-looking photo. He stays B&W; only the case and the red swooshes keep their color (`assets/charlie-cutout.webp`, trail `charlie-trail-v2.webp`).
-- **Suit up**: hover the figure (the silhouette itself, alpha hit-tested; tap on touch) and he morphs into the *COMING HOME (Odyssey)* avatar: yellow radiation suit, Sony Walkman held up, same pose on the same case (`assets/charlie-hazmat-cutout.webp`, same crop so the two overlay exactly). The reveal opens from the cursor. Hovering the glasses LED keeps Charlie, so the Meta POV still works.
+- **Suit up**: hover the figure (the silhouette itself, alpha hit-tested; tap on touch) and he morphs into the *COMING HOME (Odyssey)* avatar: yellow radiation suit, Sony Walkman held up, the same white Nike Bruins, same pose on the same case (`assets/charlie-hazmat-cutout.webp`, same crop so the two overlay exactly). The reveal opens from the cursor. Hovering the glasses LED keeps Charlie, so the Meta POV still works.
 
 ## Music
 

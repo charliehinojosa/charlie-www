@@ -172,10 +172,6 @@
   @keyframes povIn { from { opacity: 0; transform: scale(1.06); filter: blur(10px); } to { opacity: 1; transform: none; filter: none; } }
   .pov-frame { position: relative; height: min(88dvh, 133vw); aspect-ratio: 3 / 4; border-radius: 26px; overflow: hidden; background: #111; box-shadow: 0 40px 120px rgba(0,0,0,.6); }
   .pov-frame img { position: absolute; inset: -3%; width: 106%; height: 106%; max-width: none; object-fit: cover; animation: bob 5.5s ease-in-out infinite; }
-  /* Live mode: the visitor's own camera, unmirrored, so it reads as Charlie looking straight at them through the glasses */
-  .pov-frame .cam { position: absolute; inset: -3%; width: 106%; height: 106%; object-fit: cover; opacity: 0; transition: opacity .6s; animation: bob 5.5s ease-in-out infinite; }
-  .pov.live .pov-frame .cam { opacity: 1; }
-  .pov.live .pov-frame img { opacity: 0; transition: opacity .6s; }
   @keyframes bob { 0%,100% { transform: translate(0,0) rotate(0); } 25% { transform: translate(-.6%, .5%) rotate(-.3deg); } 50% { transform: translate(.3%, -.4%) rotate(.25deg); } 75% { transform: translate(.6%, .3%) rotate(-.15deg); } }
   .pov-frame::after { /* lens vignette + a hint of the frame rim at the top corners */
     content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -371,7 +367,7 @@
   @media (prefers-reduced-motion: reduce) {
     .figure, .figure.suited, .figure .suit, .figure.suited .suit { transition: none; }
     html { scroll-behavior: auto; }
-    .badge svg.ring, .led::before, .pov-frame img, .pov-frame .cam, .wave b, .fire b { animation: none; }
+    .badge svg.ring, .led::before, .pov-frame img, .wave b, .fire b { animation: none; }
     .fire b { transition: none; }
     .stage, .fly { transition: none; }
   }
@@ -492,7 +488,6 @@
 <dialog class="pov" id="pov" aria-label="Point of view from Charlie's Ray-Ban Meta glasses">
   <div class="pov-frame">
     <img src="assets/pov-meta.jpg" alt="First-person view from Charlie's glasses: his hands clasped over his knees and black sneakers, a photographer crouched ahead shooting him, softboxes and a tether laptop showing the shot.">
-    <video class="cam" id="pov-cam" playsinline muted aria-hidden="true"></video>
     <div class="hud">
       <div class="hud-top">
         <span class="rec"><i></i><span id="rec-time">00:00</span></span>
@@ -501,7 +496,7 @@
       <p class="voice" id="voice" aria-live="polite"><span class="wave" aria-hidden="true"><b></b><b></b><b></b><b></b></span><span id="voice-text">“Hey Meta, record.”</span><small id="voice-sub">Listening…</small></p>
     </div>
   </div>
-  <p class="pov-caption" id="pov-caption"><b>Through my lenses</b><span id="pov-cap-text">The BUILDER shoot, from where I was sitting.</span></p>
+  <p class="pov-caption"><b>Through my lenses</b>The BUILDER shoot, from where I was sitting.</p>
   <button class="circle pov-close" type="button" id="pov-close" aria-label="Close and return">
     <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg>
   </button>
@@ -687,36 +682,13 @@
   const voiceText = document.getElementById('voice-text');
   const voiceSub = document.getElementById('voice-sub');
   let timers = [];
-  const cam = document.getElementById('pov-cam');
-  const capText = document.getElementById('pov-cap-text');
-  const capDefault = capText.textContent;
-  let camStream = null;
-  // Ask for the visitor's front camera; the feed stays in their browser (never recorded or sent anywhere).
-  // No camera, or permission denied: the still from the shoot stays up.
-  async function startCam() {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
-    try {
-      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 1706 } }, audio: false });
-      if (!pov.open) { stopCam(); return; }
-      cam.srcObject = camStream;
-      await cam.play();
-      pov.classList.add('live');
-      if (pov.classList.contains('recording')) voiceSub.textContent = 'Nothing is saved · close to stop';
-      capText.textContent = "That's you, from where I'm sitting. Live, and it stays on your device.";
-    } catch (e) { stopCam(); }
-  }
-  function stopCam() {
-    if (camStream) camStream.getTracks().forEach(t => t.stop());
-    camStream = null; cam.srcObject = null;
-    pov.classList.remove('live'); capText.textContent = capDefault;
-  }
 
   function openPov() {
     const s = stage.getBoundingClientRect(), l = led.getBoundingClientRect();
     stage.style.setProperty('--ox', (l.left + l.width / 2 - s.left) + 'px');
     stage.style.setProperty('--oy', (l.top + l.height / 2 - s.top) + 'px');
     hero.classList.add('warp');
-    setTimeout(() => { pov.showModal(); startRecording(); startCam(); }, reduce ? 0 : 620);
+    setTimeout(() => { pov.showModal(); startRecording(); }, reduce ? 0 : 620);
   }
   function startRecording() {
     pov.classList.remove('recording');
@@ -725,7 +697,7 @@
     let t = 0;
     timers.push(setTimeout(() => {
       voiceText.textContent = 'Recording video';
-      voiceSub.textContent = pov.classList.contains('live') ? 'Nothing is saved · close to stop' : 'Say “Hey Meta, stop” to finish';
+      voiceSub.textContent = 'Say “Hey Meta, stop” to finish';
       pov.classList.add('recording');
       timers.push(setInterval(() => {
         t++; recTime.textContent = String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
@@ -735,7 +707,6 @@
   function closePov() {
     timers.forEach(id => { clearTimeout(id); clearInterval(id); }); timers = [];
     recTime.textContent = '00:00';
-    stopCam();
     hero.classList.remove('warp');
   }
   led.addEventListener('click', openPov);

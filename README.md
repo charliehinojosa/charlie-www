@@ -57,3 +57,18 @@ The hero photo is the latest black-and-white Higgsfield portrait (the *BUILDER* 
 Type: Anton (display) and Archivo (text), self-hosted in `assets/fonts` (SIL OFL).
 
 Copy in `[BRACKETS]` is placeholder content that still needs filling in. Open `index.html` in a browser to view it; there's no build step.
+
+## Lead intake (Tastemaster page)
+
+"Start a project" and the offer buttons open an intake card that rises out from behind the footer's top edge. It posts JSON to `/api/lead`, a serverless function (`api/lead.js`, Vercel Node runtime) that emails the lead through [Resend](https://resend.com) with the lead's address as reply-to.
+
+Setup on Vercel (Project → Settings → Environment Variables):
+
+| Variable | Value |
+| --- | --- |
+| `RESEND_API_KEY` | your Resend API key |
+| `LEAD_TO` | where leads are delivered |
+| `LEAD_FROM` | a sender on a domain verified in Resend, e.g. `Tastemaster <leads@yourdomain.com>` |
+| `LEAD_AUTOREPLY` | optional, `1` to send the lead a short "Got it" confirmation |
+
+The function rejects non-POSTs, validates name/email/message, length-limits and HTML-escapes every field, and silently drops submissions that fill the hidden honeypot field. GitHub Pages can't run the function, so the site needs to be hosted on Vercel (or the function ported to Netlify/Cloudflare) for the form to deliver.

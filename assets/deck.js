@@ -18,13 +18,15 @@
 
   const TRACKS = [
     { id: 'scored', group: 'by', title: 'Scored, Vol. 1', artist: 'Charlie Hinojosa', release: 'LP', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/album/2M6IxJFfhFzBNcOWFb7OBa' },
+    { id: 'severance', group: 'by', title: 'Severance', artist: 'Charlie Hinojosa', release: 'Scored, Vol. 1', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/track/2V227pEduiElekgPuE15Bu' },
+    { id: 'bonsai', group: 'by', title: 'Bonsai', artist: 'Charlie Hinojosa', release: 'Scored, Vol. 1', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/track/6E3EIlCVg7MGhcC5oA4wmg' },
     { id: 'coming-home', group: 'by', title: 'COMING HOME (Odyssey)', artist: 'Charlie Hinojosa', release: 'LP', cover: 'assets/covers/coming-home-odyssey.jpg', spotify: 'https://open.spotify.com/album/0CLIK7VrYwqFsamlTW4KoW' },
-    { id: 't1', group: 'raiz', title: 'Vivo', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:29', src: 'assets/audio/raiz-vivo-radio.mp3' },
-    { id: 't2', group: 'raiz', title: 'Ama', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:30', src: 'assets/audio/raiz-ama-radio.mp3' },
-    { id: 't3', group: 'raiz', title: 'Montaña', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:25', src: 'assets/audio/raiz-montana-radio.mp3' },
-    { id: 't4', group: 'raiz', title: 'I Speak Jesus', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:18', src: 'assets/audio/raiz-i-speak-jesus-radio.mp3' },
-    { id: 't5', group: 'raiz', title: 'So Low', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:16', src: 'assets/audio/raiz-so-low-radio.mp3' },
-    { id: 't6', group: 'raiz', title: '3:33', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:32', src: 'assets/audio/raiz-333-radio.mp3' },
+    { id: 't1', group: 'raiz', title: 'Vivo', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:29', src: 'assets/audio/raiz-vivo-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
+    { id: 't2', group: 'raiz', title: 'Ama', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:30', src: 'assets/audio/raiz-ama-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
+    { id: 't3', group: 'raiz', title: 'Montaña', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:25', src: 'assets/audio/raiz-montana-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
+    { id: 't4', group: 'raiz', title: 'I Speak Jesus', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:18', src: 'assets/audio/raiz-i-speak-jesus-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
+    { id: 't5', group: 'raiz', title: 'So Low', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:16', src: 'assets/audio/raiz-so-low-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
+    { id: 't6', group: 'raiz', title: '3:33', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:32', src: 'assets/audio/raiz-333-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
   ];
   const GROUPS = { by: 'By Charlie · on Spotify', raiz: 'RAÍZ · new album samples' };
   const PLAYABLE = TRACKS.map((t, i) => (t.src ? i : -1)).filter((i) => i >= 0);
@@ -240,6 +242,8 @@
     });
   }
 
+  // Spotify mark, drawn as three arcs in a circle (stroke, currentColor)
+  const SPOTIFY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10.2"/><path d="M7 9.4c3.4-1 7.2-.7 10.2.9M7.6 12.6c2.8-.8 5.8-.5 8.2.8M8.2 15.6c2.2-.6 4.4-.4 6.3.6"/></svg>';
   const rows = [];
   let lastGroup = '';
   TRACKS.forEach((t, i) => {
@@ -260,6 +264,17 @@
     b.querySelector('.q-artist').textContent = t.artist + (t.release && t.release !== t.artist ? ' · ' + t.release : '');
     b.addEventListener('click', () => select(i, !!t.src));
     li.appendChild(b);
+    if (t.spotify) {
+      const a = document.createElement('a');
+      a.className = 'q-spot';
+      a.href = t.spotify;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.setAttribute('aria-label', 'Listen to ' + t.title + ' on Spotify');
+      a.title = 'Listen on Spotify';
+      a.innerHTML = SPOTIFY;
+      li.appendChild(a);
+    }
     queueEl.appendChild(li);
     rows.push(b);
   });
@@ -275,7 +290,7 @@
     bylineEl.textContent = t.artist + ' — ' + t.release;
     artEl.style.backgroundImage = 'url(' + t.cover + ')';
     const at = PLAYABLE.indexOf(S.index);
-    posEl.textContent = t.src ? 'RAÍZ samples · ' + String(at + 1).padStart(2, '0') + ' / ' + String(PLAYABLE.length).padStart(2, '0') : t.artist;
+    posEl.textContent = t.src ? t.release + ' · ' + String(at + 1).padStart(2, '0') + ' / ' + String(PLAYABLE.length).padStart(2, '0') : t.artist;
     timeEl.textContent = t.src ? fmt(S.elapsed) + ' / ' + lengthOf(t) : 'stream it on Spotify';
     playBtn.hidden = !t.src;
     playBtn.innerHTML = engaged() ? PAUSE : PLAY;
@@ -291,7 +306,7 @@
       const active = i === S.index;
       b.classList.toggle('active', active);
       if (active) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
-      b.querySelector('.q-len').textContent = r.src ? lengthOf(r) : 'Spotify ↗';
+      b.querySelector('.q-len').textContent = r.src ? lengthOf(r) : r.kind || r.release;
     });
     spin();
   }

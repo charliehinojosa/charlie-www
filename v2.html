@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charlie Hinojosa — Concept v2</title>
+<meta name="description" content="Charlie Hinojosa. Builder. Creative. Founder of Sightbox Studios.">
+<link rel="preload" href="assets/fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  /* Concept v2: Posters 1 + 4, pushed with the Kinetic (motion blur, ember accent,
+     staggered cards, cropped lowercase wordmark), Onmark (pill UI, two-tone copy,
+     inline image pills, scroll badge) and Wobble (word tunnel, halftone, flying posters) refs. */
+  @font-face { font-family: "Anton"; font-weight: 400; font-display: swap; src: url(assets/fonts/anton-latin-400-normal.woff2) format("woff2"); }
+  @font-face { font-family: "Archivo"; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; src: url(assets/fonts/archivo-latin-wdth-normal.woff2) format("woff2-variations"); }
+
+  :root {
+    --page: #ecebe8;
+    --card: #dcdbd7;
+    --tunnel: #f3f2ef;
+    --ink: #0f0f0e;
+    --mute: #8d8b86;      /* two-tone copy, large text only */
+    --ink-2: #4a4945;     /* small secondary text */
+    --ember: #f2541b;     /* from the "11" poster, pushed toward Kinetic's red-orange */
+    --rule: rgba(15, 15, 14, .14);
+    --display: "Anton", Impact, sans-serif;
+    --text: "Archivo", "Helvetica Neue", Helvetica, sans-serif;
+    --g: clamp(16px, 2.6vw, 36px);
+    --r: clamp(18px, 2vw, 28px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; overflow-x: clip; background: var(--page); color: var(--ink); font-family: var(--text); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  img { display: block; max-width: 100%; height: auto; }
+  .micro { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+  .mute { color: var(--mute); }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--ember); box-shadow: 0 0 14px rgba(242, 84, 27, .7); }
+
+  /* Pills & buttons (Onmark / Kinetic) */
+  .pill { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; padding: 0 20px; border-radius: 999px; background: var(--ink); color: #f6f5f2; text-decoration: none; font-weight: 600; }
+  .pill:hover { background: #2b2b29; }
+  .pill.light { background: #f6f5f2; color: var(--ink); }
+  .pill.light:hover { background: #fff; }
+  .pill .thumb { width: 54px; height: 30px; border-radius: 999px; margin-left: -12px; background: url(assets/orange-11-blur.jpg) center/cover; box-shadow: 0 0 18px rgba(242, 84, 27, .55); }
+  .circle { width: 44px; height: 44px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--ink); color: #f6f5f2; text-decoration: none; }
+  .circle svg { width: 18px; height: 18px; }
+  .tag { display: inline-flex; align-items: center; min-height: 26px; padding: 0 12px; border-radius: 999px; border: 1px solid currentColor; font-size: 11px; opacity: .85; }
+
+  /* ---------- HERO CARD ---------- */
+  .hero { position: relative; margin: 8px; height: calc(100svh - 16px); min-height: 680px; max-height: 980px; border-radius: var(--r); overflow: hidden; background: var(--card); isolation: isolate; }
+  .halftone { position: absolute; inset: 0; z-index: 0; background: radial-gradient(rgba(15,15,14,.16) 1px, transparent 1.3px) 0 0 / 6px 6px; -webkit-mask: radial-gradient(ellipse at 50% 55%, transparent 25%, #000 85%); mask: radial-gradient(ellipse at 50% 55%, transparent 25%, #000 85%); }
+
+  /* Wobble tunnel: BUILDER repeated, folded into a ceiling and a floor */
+  .tunnel { position: absolute; inset: 0; z-index: 1; perspective: 520px; pointer-events: none; }
+  .tunnel .plane { position: absolute; left: -30%; right: -30%; height: 52%; display: flex; flex-direction: column; justify-content: space-between; font-family: var(--display); font-size: clamp(64px, 9vw, 150px); line-height: .9; color: var(--tunnel); white-space: nowrap; text-align: center; letter-spacing: .01em; }
+  .tunnel .ceil { top: -6%; transform-origin: 50% 100%; transform: rotateX(-58deg); }
+  .tunnel .floor { bottom: -6%; transform-origin: 50% 0; transform: rotateX(58deg); }
+  .tunnel .plane span:nth-child(odd) { color: transparent; -webkit-text-stroke: 1.5px #f6f5f2; }
+
+  .wordmark { position: absolute; z-index: 2; left: 0; right: 0; top: 47%; margin: 0; text-align: center; white-space: nowrap; font-family: var(--display); font-weight: 400; font-size: 22.6vw; line-height: .8; letter-spacing: -.004em; transform: translateY(-50%) scaleY(1.18);
+    color: var(--ink);
+    background: linear-gradient(rgba(15,15,14,.62), rgba(15,15,14,.82)), url(assets/builder-blur.jpg) 50% 50% / cover;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+  /* Flying posters */
+  .fly { position: absolute; z-index: 3; width: clamp(110px, 12vw, 190px); border-radius: 10px; box-shadow: 0 30px 50px -20px rgba(0,0,0,.35); }
+  .fly.a { left: 5%; top: 33%; transform: rotate(-16deg) skewY(4deg); filter: blur(2px); }
+  .fly.b { right: 5%; top: 18%; transform: rotate(13deg); filter: blur(3.5px); width: clamp(90px, 9vw, 150px); }
+  .fly.c { right: 11%; bottom: 13%; transform: rotate(-8deg); filter: blur(1.2px); width: clamp(80px, 8vw, 130px); }
+
+  /* Kinetic: motion ghost + ember streak behind the figure */
+  .streak { position: absolute; z-index: 3; left: 24%; bottom: 24%; width: 30%; height: 7%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,130,70,.95), rgba(242,84,27,.55) 50%, rgba(242,84,27,0)); filter: blur(14px); opacity: .9; }
+  .ghost { position: absolute; z-index: 3; bottom: 0; left: 50%; height: 72%; width: auto; max-width: none; transform: translateX(-74%); opacity: .45; }
+  .figure { position: absolute; z-index: 4; left: 50%; bottom: 0; height: 88%; width: auto; max-width: none; transform: translateX(-50%); filter: drop-shadow(0 22px 26px rgba(0,0,0,.18)); }
+
+  /* Hero UI */
+  .nav { position: absolute; z-index: 10; inset: 0 0 auto 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px var(--g); }
+  .brand { font-weight: 800; font-stretch: 112%; font-size: 20px; letter-spacing: -.01em; text-decoration: none; }
+  .links { display: flex; gap: 6px; padding: 4px; border-radius: 999px; background: rgba(246,245,242,.7); backdrop-filter: blur(10px); list-style: none; margin: 0; }
+  .links a { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; text-decoration: none; font-size: 13px; font-weight: 500; }
+  .links a:hover, .links a[aria-current] { background: var(--ink); color: #f6f5f2; }
+  .nav-r { display: flex; gap: 8px; align-items: center; }
+  .menu { position: relative; display: none; }
+  .menu summary { list-style: none; cursor: pointer; }
+  .menu summary::-webkit-details-marker { display: none; }
+  .menu ul { position: absolute; right: 0; top: 52px; margin: 0; padding: 8px; list-style: none; min-width: 200px; border-radius: 18px; background: #f6f5f2; box-shadow: 0 18px 40px rgba(0,0,0,.18); }
+  .menu ul a { display: block; padding: 12px 14px; border-radius: 12px; text-decoration: none; font-weight: 600; }
+  .menu ul a:hover { background: var(--card); }
+
+  .topnotes { position: absolute; z-index: 6; top: 84px; left: var(--g); right: var(--g); display: flex; justify-content: space-between; font-size: 13px; line-height: 1.35; }
+  .topnotes p { margin: 0; }
+  .topnotes p:last-child { text-align: right; }
+
+  .intro { position: absolute; z-index: 6; left: var(--g); bottom: var(--g); max-width: 340px; }
+  .intro h2 { margin: 0 0 18px; text-shadow: 0 0 18px var(--card); font-weight: 600; font-stretch: 100%; font-size: clamp(22px, 2vw, 30px); line-height: 1.12; letter-spacing: -.015em; }
+  .socials { display: flex; gap: 8px; margin-top: 14px; }
+  .socials a { width: 32px; height: 32px; font-size: 10px; font-weight: 700; }
+
+  .badge { position: absolute; z-index: 6; right: var(--g); bottom: var(--g); width: 104px; height: 104px; display: grid; place-items: center; text-decoration: none; }
+  .badge svg.ring { position: absolute; inset: 0; animation: spin 14s linear infinite; }
+  .badge .arrow { width: 44px; height: 44px; border-radius: 50%; background: var(--ink); color: #f6f5f2; display: grid; place-items: center; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .badge svg.ring { animation: none; } html { scroll-behavior: auto; } }
+
+  /* ---------- MEET (Onmark) ---------- */
+  section { padding: clamp(72px, 10vw, 150px) var(--g); }
+  .meet { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(32px, 6vw, 96px); }
+  .meet aside { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
+  .stat b { display: block; font-weight: 600; font-stretch: 100%; font-size: clamp(64px, 7vw, 104px); line-height: .9; letter-spacing: -.04em; }
+  .stat b span { color: var(--mute); }
+  .stat p { margin: 10px 0 0; font-size: 14px; font-weight: 600; }
+  .big-copy { margin: 0; font-weight: 600; font-stretch: 100%; font-size: clamp(30px, 3.6vw, 56px); line-height: 1.12; letter-spacing: -.025em; }
+  .ipill { display: inline-block; vertical-align: -.08em; width: 2.1em; height: .86em; border-radius: 999px; background-size: cover; background-position: center; }
+  .ipill.o { background-image: url(assets/orange-11-blur.jpg); box-shadow: 0 0 22px rgba(242,84,27,.45); }
+  .ipill.b { background-image: url(assets/builder-blur.jpg); }
+  .barcode { display: inline-block; vertical-align: -.06em; width: 1.9em; height: .8em; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px); }
+  .meet .body { max-width: 46ch; margin: 40px 0 28px; font-size: 16px; line-height: 1.6; font-weight: 500; }
+
+  /* ---------- DISCIPLINES (Kinetic staggered cards) ---------- */
+  .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); padding: 0 var(--g) clamp(72px, 10vw, 150px); }
+  .card .tag { align-self: flex-start; }
+  .card { position: relative; min-height: clamp(300px, 30vw, 420px); border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 22px; color: #f6f5f2; background: var(--ink) center/cover; }
+  .card:nth-child(even) { margin-top: clamp(48px, 7vw, 100px); }
+  .card.o { background-image: linear-gradient(to top, rgba(15,15,14,.72), rgba(15,15,14,0) 55%), url(assets/orange-11-blur.jpg); }
+  .card.b { background-image: linear-gradient(to top, rgba(15,15,14,.78), rgba(15,15,14,.05) 60%), url(assets/builder-blur.jpg); }
+  .card.l { background: var(--card); color: var(--ink); }
+  .card h3 { margin: 12px 0 8px; font-weight: 500; font-size: clamp(22px, 1.9vw, 28px); line-height: 1.12; letter-spacing: -.015em; }
+  .card p { margin: 0; font-size: 13px; line-height: 1.45; opacity: .72; }
+
+  /* ---------- WORK ---------- */
+  .work-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; }
+  .work-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(72px, 13vw, 210px); line-height: .84; }
+  .work { list-style: none; margin: 0; padding: 0; }
+  .work li a { display: grid; grid-template-columns: 60px minmax(0, 1fr) auto 90px; gap: 18px; align-items: center; padding: 22px 0; border-top: 1px solid var(--rule); text-decoration: none; }
+  .work li:last-child a { border-bottom: 1px solid var(--rule); }
+  .work h3 { margin: 0; font-weight: 600; font-size: clamp(24px, 3.2vw, 46px); letter-spacing: -.025em; line-height: 1.05; transition: transform .25s; }
+  .work .n { color: var(--ink-2); }
+  .work .yr { text-align: right; color: var(--ink-2); }
+  .work li a:hover h3 { transform: translateX(10px); }
+  .work li a:hover .n .dot { visibility: visible; }
+  .work .n .dot { visibility: hidden; margin-right: 8px; }
+
+  /* ---------- STATEMENT (Kinetic) ---------- */
+  .statement { text-align: center; }
+  .statement .mk { font-weight: 800; font-stretch: 112%; font-size: 22px; color: var(--ember); }
+  .statement h2 { margin: 28px auto 0; max-width: 16ch; font-weight: 600; font-size: clamp(44px, 7.4vw, 124px); line-height: 1; letter-spacing: -.035em; }
+  .statement h2 .fade { background: linear-gradient(var(--mute), rgba(141,139,134,.15)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+  /* ---------- FOOTER CARD ---------- */
+  .end { margin: 8px; border-radius: var(--r); overflow: hidden; background: var(--ink); color: #f6f5f2; padding: clamp(28px, 4vw, 56px) var(--g) 0; position: relative; }
+  .end-top { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 32px; align-items: start; }
+  .end h2 { margin: 0; font-weight: 600; font-size: clamp(34px, 4.4vw, 68px); line-height: 1.04; letter-spacing: -.03em; }
+  .end h2 span { color: #8d8b86; }
+  .end ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; }
+  .end ul a { display: block; padding: 12px 0; border-bottom: 1px solid rgba(246,245,242,.14); text-decoration: none; font-size: 15px; }
+  .end ul a:hover { color: var(--ember); }
+  .end .ctas { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; }
+  .end .giant { margin: clamp(40px, 6vw, 80px) 0 0; font-weight: 500; font-stretch: 118%; font-size: 18.4vw; line-height: .74; letter-spacing: -.06em; text-align: center; white-space: nowrap; transform: translateY(12%); color: #f6f5f2; }
+  .end .giant span { color: var(--ember); }
+  .legal { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 16px calc(var(--g) + 8px) 22px; color: var(--ink-2); }
+
+  /* ---------- Small screens ---------- */
+  @media (max-width: 860px) {
+    .links { display: none; }
+    .menu { display: block; }
+    .nav .pill.talk { display: none; }
+    .hero { height: auto; max-height: none; min-height: 0; }
+    .stage { position: relative; height: 132vw; max-height: 640px; }
+    .wordmark { top: 50%; font-size: 23vw; }
+    .figure { height: 74%; }
+    .ghost { height: 70%; }
+    .fly.a { top: 58%; left: 2%; }
+    .fly.b { top: 22%; right: 2%; }
+    .fly.c { display: none; }
+    .topnotes { top: 74px; font-size: 12px; }
+    .intro { position: relative; left: auto; bottom: auto; max-width: none; padding: 8px var(--g) var(--g); }
+    .badge { display: none; }
+    .meet { grid-template-columns: minmax(0, 1fr); }
+    .meet aside { flex-flow: row wrap; justify-content: space-between; gap: 24px; order: 2; }
+    .meet aside .mono { flex-basis: 100%; }
+    .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .work li a { grid-template-columns: 40px minmax(0, 1fr) 56px; }
+    .work .cat { display: none; }
+    .end-top { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (min-width: 861px) { .stage { position: absolute; inset: 0; } }
+</style>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="#top" aria-label="Charlie Hinojosa, home">CH©</a>
+    <ul class="links">
+      <li><a href="#top" aria-current="page">Home</a></li>
+      <li><a href="#meet">About</a></li>
+      <li><a href="#ventures">Ventures</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#music">Music</a></li>
+    </ul>
+    <div class="nav-r">
+      <a class="pill talk micro" href="#contact">Let's talk <span aria-hidden="true">+</span></a>
+      <details class="menu">
+        <summary class="circle" aria-label="Menu">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7h12M3 11h12"/></svg>
+        </summary>
+        <ul>
+          <li><a href="#meet">About</a></li>
+          <li><a href="#ventures">Ventures</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#music">Music</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </details>
+    </div>
+  </nav>
+
+  <div class="stage">
+    <div class="halftone" aria-hidden="true"></div>
+    <div class="tunnel" aria-hidden="true">
+      <div class="plane ceil"><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span></div>
+      <div class="plane floor"><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span><span>BUILDER BUILDER BUILDER</span></div>
+    </div>
+    <h1 class="wordmark" aria-label="Charlie Hinojosa">HINOJOSA</h1>
+    <img class="fly a" src="assets/orange-11.jpg" alt="" aria-hidden="true">
+    <img class="fly b" src="assets/grey-hinojosa.jpg" alt="" aria-hidden="true">
+    <img class="fly c" src="assets/builder-cover-bw.jpg" alt="" aria-hidden="true">
+    <div class="streak" aria-hidden="true"></div>
+    <img class="ghost" src="assets/charlie-trail.webp" alt="" aria-hidden="true">
+    <img class="figure" src="assets/charlie-bw-cutout.webp" alt="Black-and-white portrait of Charlie Hinojosa seated on a wooden block, one sneaker toward the camera.">
+    <div class="topnotes">
+      <p>Early web, music<br>and AI since 2011</p>
+      <p>Builder / Creative<br>Est. 2011</p>
+    </div>
+  </div>
+
+  <div class="intro">
+    <h2>Builder. Creative.<br><span class="mute">Founder of Sightbox Studios™</span></h2>
+    <a class="pill light" href="#work"><span class="thumb" aria-hidden="true"></span>See the work</a>
+    <div class="socials">
+      <a class="circle" href="#contact" aria-label="Instagram">IG</a>
+      <a class="circle" href="#contact" aria-label="LinkedIn">in</a>
+      <a class="circle" href="#contact" aria-label="X">X</a>
+    </div>
+  </div>
+
+  <a class="badge" href="#meet" aria-label="Scroll down">
+    <svg class="ring" viewBox="0 0 104 104" aria-hidden="true">
+      <defs><path id="ring" d="M52,52 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs>
+      <text font-size="10.5" letter-spacing="3.2" font-family="Archivo, sans-serif" font-weight="600" fill="#0f0f0e"><textPath href="#ring">SCROLL DOWN · SCROLL DOWN · </textPath></text>
+    </svg>
+    <span class="arrow"><svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v12M3 9l5 5 5-5"/></svg></span>
+  </a>
+</header>
+
+<section id="meet">
+  <div class="meet">
+    <aside>
+      <span class="mono">+ Meet Charlie</span>
+      <div class="stat"><b>15<span>yrs</span></b><p>Building on the internet</p></div>
+      <div class="stat"><b>3<span>×</span></b><p>Web · Music · AI</p></div>
+    </aside>
+    <div>
+      <p class="big-copy">Builder and creative since 2011, from the early web <span class="ipill b" aria-hidden="true"></span> to music <span class="ipill o" aria-hidden="true"></span> and now AI. <span class="mute">Founder of Sightbox Studios, building <span class="barcode" aria-hidden="true"></span> what comes next.</span></p>
+      <p class="body">[SHORT BIO: two or three sentences in Charlie's voice about where he started, what he builds and why it matters.]</p>
+      <a class="pill micro" href="#work">My story <span aria-hidden="true">+</span></a>
+    </div>
+  </div>
+</section>
+
+<div class="cards" id="ventures">
+  <article class="card">
+    <span class="tag">Since 2011</span>
+    <div><span class="dot" aria-hidden="true"></span><h3>Early web</h3><p>Where it started.</p></div>
+  </article>
+  <article class="card o" id="music">
+    <span class="tag">Sound</span>
+    <div><span class="dot" aria-hidden="true"></span><h3>Music</h3><p>The through-line.</p></div>
+  </article>
+  <article class="card b">
+    <span class="tag">Now</span>
+    <div><span class="dot" aria-hidden="true"></span><h3>AI</h3><p>What's next.</p></div>
+  </article>
+  <article class="card l">
+    <span class="tag">Studio</span>
+    <div><span class="dot" aria-hidden="true"></span><h3>Sightbox Studios</h3><p>[ONE LINE ON THE STUDIO]</p></div>
+  </article>
+</div>
+
+<section id="work" style="padding-top: 0">
+  <div class="work-head">
+    <h2>THE WORK</h2>
+    <span class="mono">+ Selected · 2011 — Now</span>
+  </div>
+  <ul class="work">
+    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>01</span><h3>Sightbox Studios</h3><span class="cat tag">Founder</span><span class="yr mono">[YEAR]</span></a></li>
+    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>02</span><h3>[PROJECT NAME]</h3><span class="cat tag">Early web</span><span class="yr mono">[YEAR]</span></a></li>
+    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>03</span><h3>[PROJECT NAME]</h3><span class="cat tag">Music</span><span class="yr mono">[YEAR]</span></a></li>
+    <li><a href="#work"><span class="n mono"><span class="dot" aria-hidden="true"></span>04</span><h3>[PROJECT NAME]</h3><span class="cat tag">AI</span><span class="yr mono">[YEAR]</span></a></li>
+  </ul>
+</section>
+
+<section class="statement" style="padding-top: 0">
+  <div class="mk" aria-hidden="true">CH©</div>
+  <h2>Building what's next <span class="fade">on the internet since 2011.</span></h2>
+</section>
+
+<footer class="end" id="contact">
+  <div class="end-top">
+    <div>
+      <h2>Have something to build? <span>Let's talk.</span></h2>
+      <div class="ctas">
+        <a class="pill light micro" href="mailto:[EMAIL]">[EMAIL] <span aria-hidden="true">+</span></a>
+      </div>
+    </div>
+    <ul>
+      <li><a href="#contact">Instagram</a></li>
+      <li><a href="#contact">LinkedIn</a></li>
+      <li><a href="#contact">X</a></li>
+      <li><a href="#contact">Sightbox Studios</a></li>
+    </ul>
+  </div>
+  <p class="giant" aria-hidden="true">hinojosa<span>.</span></p>
+</footer>
+<div class="legal micro"><span>© Charlie Hinojosa</span><span>Builder / Creative — Est. 2011</span></div>
+
+</body>
+</html>

@@ -339,6 +339,17 @@
   .life.hot::after { background: var(--ember); box-shadow: 0 0 12px rgba(242,84,27,.7); }
   .life div { margin-top: var(--stem, 36px); padding: 10px 0 0 10px; border-left: 1px solid var(--ink); }
   .life.low { --stem: 112px; }
+  /* Timeline hover cards: same card as the manifesto peeks, with a photo slot */
+  .life div[tabindex] { cursor: help; outline: none; }
+  .life div[tabindex]:focus-visible { box-shadow: -2px 0 0 var(--ember); }
+  .job { cursor: help; }
+  .tl .pop { left: -20px; width: 260px; transform: translate(0, 10px) scale(.96); transform-origin: 20px 100%; }
+  .tl .job .pop { left: 14px; top: calc(100% + 14px); bottom: auto; transform-origin: 20px 0; transform: translate(0, -10px) scale(.96); }
+  .life div:hover .pop, .life div:focus-within .pop, .job:hover .pop { opacity: 1; visibility: visible; transform: none; transition: opacity .25s, transform .3s var(--ease); }
+  .tl .pop .what { font-family: var(--text); }
+  .ph { display: grid; place-items: center; height: 150px; border-radius: 12px; color: var(--mute); font-size: 11px; background: repeating-linear-gradient(-45deg, #e7e6e2 0 10px, #efeeea 10px 20px); box-shadow: inset 0 0 0 1px var(--rule); }
+  .job .pop .when, .job .pop .what { color: var(--ink); }
+  .job .pop .ph { color: var(--mute); }
   .life b { display: block; font-family: var(--display); font-weight: 400; font-size: 30px; line-height: 1; }
   .life strong { display: block; margin: 6px 0 8px; font-size: 15px; font-weight: 600; line-height: 1.25; }
   .life .tag { min-height: 22px; font-size: 10px; padding: 0 9px; }
@@ -793,21 +804,22 @@
       <ol class="sr">
         <li>Career: Cisco, 1999 to 2008. Intel, 2008 to 2011. Sightbox Studios, founder, 2011 to present.</li>
       </ol>
-      <div class="x job" style="--x:2; --w:9" aria-hidden="true"><span class="mono">1999 — 2008</span><b>Cisco</b></div>
-      <div class="x job" style="--x:11; --w:3" aria-hidden="true"><span class="mono">2008 — 2011</span><b>Intel</b></div>
-      <div class="x job now" style="--x:14; --w:15.4" aria-hidden="true"><span class="mono">2011 — Present · Founder</span><b>Sightbox Studios</b><i class="rep mono">Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present ·</i></div>
+      <div class="x job" style="--x:2; --w:9" aria-hidden="true"><span class="mono">1999 — 2008</span><b>Cisco</b><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/1999-cisco.jpg">Photo · 1999</span><span class="when">1999 — 2008</span><span class="what">Cisco</span></span></div>
+      <div class="x job" style="--x:11; --w:3" aria-hidden="true"><span class="mono">2008 — 2011</span><b>Intel</b><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2008-intel.jpg">Photo · 2008</span><span class="when">2008 — 2011</span><span class="what">Intel</span></span></div>
+      <div class="x job now" style="--x:14; --w:15.4" aria-hidden="true"><span class="mono">2011 — Present · Founder</span><b>Sightbox Studios</b><i class="rep mono">Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present · Sightbox Studios · Founder · 2011 → Present ·</i><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2011-sightbox-studios.jpg">Photo · 2011</span><span class="when">2011 — Present</span><span class="what">Sightbox Studios</span></span></div>
 
       <ol style="list-style: none; margin: 0; padding: 0">
-        <li class="x life hot" style="--x:0"><div><b>1997</b><strong>Texas All-State Wrestler</strong><span class="tag">Wrestling</span></div></li>
-        <li class="x life low" style="--x:2"><div><b>1999</b><strong>Married</strong><span class="tag">Family</span></div></li>
-        <li class="x life" style="--x:3"><div><b>2000</b><strong>Musician with Chozen</strong><span class="tag">Music</span></div></li>
-        <li class="x life low" style="--x:4"><div><b>2001</b><strong>Anyssa born</strong><span class="tag">Family</span></div></li>
-        <li class="x life" style="--x:9"><div><b>2006</b><strong>Cianna born</strong><span class="tag">Family</span></div></li>
-        <li class="x life low" style="--x:10"><div><b>2007</b><strong>Filmmaking</strong><span class="tag">Film</span></div></li>
-        <li class="x life" style="--x:19"><div><b>2016</b><strong>Tapp That App</strong><span class="tag">Startups</span></div></li>
-        <li class="x life low" style="--x:25"><div><b>2022</b><strong>Stacado</strong><span class="tag">Startup</span></div></li>
-        <li class="x life hot" style="--x:28"><div><b>2025</b><strong>Xoomo Wrestling League</strong><span class="tag">Founded</span></div></li>
-        <li class="x life hot low" style="--x:29"><div><b>2026</b><strong>Flux Intelligence Group</strong><span class="tag">Now</span></div></li>
+        <li class="x life hot" style="--x:0"><div tabindex="0"><b>1997</b><strong>Texas All-State Wrestler</strong><span class="tag">Wrestling</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/1997-texas-all-state-wrestler.jpg">Photo · 1997</span><span class="when">1997</span><span class="what">Texas All-State Wrestler</span></span></div></li>
+        <li class="x life low" style="--x:2"><div tabindex="0"><b>1999</b><strong>Married</strong><span class="tag">Family</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/1999-married.jpg">Photo · 1999</span><span class="when">1999</span><span class="what">Married</span></span></div></li>
+        <li class="x life" style="--x:3"><div tabindex="0"><b>2000</b><strong>Musician with Chozen</strong><span class="tag">Music</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2000-musician-with-chozen.jpg">Photo · 2000</span><span class="when">2000</span><span class="what">Musician with Chozen</span></span></div></li>
+        <li class="x life low" style="--x:4"><div tabindex="0"><b>2001</b><strong>Anyssa born</strong><span class="tag">Family</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2001-anyssa-born.jpg">Photo · 2001</span><span class="when">2001</span><span class="what">Anyssa born</span></span></div></li>
+        <li class="x life" style="--x:9"><div tabindex="0"><b>2006</b><strong>Cianna born</strong><span class="tag">Family</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2006-cianna-born.jpg">Photo · 2006</span><span class="when">2006</span><span class="what">Cianna born</span></span></div></li>
+        <li class="x life low" style="--x:10"><div tabindex="0"><b>2007</b><strong>Filmmaking</strong><span class="tag">Film</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2007-filmmaking.jpg">Photo · 2007</span><span class="when">2007</span><span class="what">Filmmaking</span></span></div></li>
+        <li class="x life" style="--x:19"><div tabindex="0"><b>2016</b><strong>Tapp That App</strong><span class="tag">Startups</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2016-tapp-that-app.jpg">Photo · 2016</span><span class="when">2016</span><span class="what">Tapp That App</span></span></div></li>
+        <li class="x life low" style="--x:25"><div tabindex="0"><b>2022</b><strong>Stacado</strong><span class="tag">Startup</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2022-stacado.jpg">Photo · 2022</span><span class="when">2022</span><span class="what">Stacado</span></span></div></li>
+        <li class="x life" style="--x:27"><div tabindex="0"><b>2024</b><strong>James born</strong><span class="tag">Family</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2024-james-born.jpg">Photo · 2024</span><span class="when">2024</span><span class="what">James born</span></span></div></li>
+        <li class="x life hot" style="--x:28"><div tabindex="0"><b>2025</b><strong>Xoomo Wrestling League</strong><span class="tag">Founded</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2025-xoomo-wrestling-league.jpg">Photo · 2025</span><span class="when">2025</span><span class="what">Xoomo Wrestling League</span></span></div></li>
+        <li class="x life hot low" style="--x:29"><div tabindex="0"><b>2026</b><strong>Flux Intelligence Group</strong><span class="tag">Now</span><span class="pop" role="tooltip"><span class="ph mono" data-photo="assets/timeline/2026-flux-intelligence-group.jpg">Photo · 2026</span><span class="when">2026</span><span class="what">Flux Intelligence Group</span></span></div></li>
       </ol>
       <span class="x now-pin" style="--x:29.4" aria-hidden="true"></span>
       <span class="x bttf" style="--x:18.8" title="Oct 21, 2015. Where we're going, we don't need roads." aria-hidden="true"><em class="mono">10.21.15</em><i></i></span>

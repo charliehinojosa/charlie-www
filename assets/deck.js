@@ -17,10 +17,11 @@
   const WORKLET_URL = 'assets/turntable-worklet.js';
 
   const TRACKS = [
-    { id: 'severance', group: 'by', title: 'Severance', artist: 'Charlie Hinojosa', release: 'Scored, Vol. 1', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/track/2V227pEduiElekgPuE15Bu' },
+    { id: 'severance', group: 'by', title: 'Severance', artist: 'Charlie Hinojosa', release: 'Scored, Vol. 1', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', length: '0:44', src: 'assets/audio/charlie-severance.mp3', spotify: 'https://open.spotify.com/track/2V227pEduiElekgPuE15Bu' },
     { id: 'bonsai', group: 'by', title: 'Bonsai', artist: 'Charlie Hinojosa', release: 'Scored, Vol. 1', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/track/6E3EIlCVg7MGhcC5oA4wmg' },
     { id: 'coming-home', group: 'by', title: 'COMING HOME (Odyssey)', artist: 'Charlie Hinojosa', release: 'LP', cover: 'assets/covers/coming-home-odyssey.jpg', spotify: 'https://open.spotify.com/album/0CLIK7VrYwqFsamlTW4KoW' },
-    { id: 'coming-home-single', group: 'by', title: 'Coming Home', artist: 'Charlie Hinojosa', release: 'Single', kind: 'Single', cover: 'assets/covers/coming-home-odyssey.jpg', spotify: 'https://open.spotify.com/track/0oPoubTunneaMpvF0QgenW' },
+    { id: 'coming-home-single', group: 'by', title: 'Coming Home', artist: 'Charlie Hinojosa', release: 'Single', kind: 'Single', cover: 'assets/covers/coming-home-odyssey.jpg', length: '0:37', src: 'assets/audio/charlie-coming-home.mp3', spotify: 'https://open.spotify.com/track/0oPoubTunneaMpvF0QgenW' },
+    { id: 'balance', group: 'by', title: 'Balance', artist: 'Charlie Hinojosa', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', length: '0:33', src: 'assets/audio/charlie-balance.mp3' },
     { id: 't1', group: 'raiz', title: 'Vivo', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:29', src: 'assets/audio/raiz-vivo-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
     { id: 't2', group: 'raiz', title: 'Ama', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:30', src: 'assets/audio/raiz-ama-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
     { id: 't3', group: 'raiz', title: 'Montaña', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:25', src: 'assets/audio/raiz-montana-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
@@ -28,7 +29,7 @@
     { id: 't5', group: 'raiz', title: 'So Low', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:16', src: 'assets/audio/raiz-so-low-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
     { id: 't6', group: 'raiz', title: '3:33', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:32', src: 'assets/audio/raiz-333-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
   ];
-  const GROUPS = { by: 'By Charlie · on Spotify', raiz: 'RAÍZ · new album samples' };
+  const GROUPS = { by: 'By Charlie', raiz: 'RAÍZ · new album samples' };
   const PLAYABLE = TRACKS.map((t, i) => (t.src ? i : -1)).filter((i) => i >= 0);
 
   const $ = (id) => document.getElementById(id);
@@ -287,10 +288,10 @@
     drawWave();
     root.dataset.status = S.status;
     titleEl.textContent = t.title;
-    bylineEl.textContent = t.artist + ' — ' + t.release;
+    bylineEl.textContent = t.release ? t.artist + ' — ' + t.release : t.artist;
     artEl.style.backgroundImage = 'url(' + t.cover + ')';
     const at = PLAYABLE.indexOf(S.index);
-    posEl.textContent = t.src ? t.release + ' · ' + String(at + 1).padStart(2, '0') + ' / ' + String(PLAYABLE.length).padStart(2, '0') : t.artist;
+    posEl.textContent = t.src ? (t.release || t.artist) + ' · ' + String(at + 1).padStart(2, '0') + ' / ' + String(PLAYABLE.length).padStart(2, '0') : t.artist;
     timeEl.textContent = t.src ? fmt(S.elapsed) + ' / ' + lengthOf(t) : 'stream it on Spotify';
     playBtn.hidden = !t.src;
     playBtn.innerHTML = engaged() ? PAUSE : PLAY;

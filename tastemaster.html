@@ -397,7 +397,50 @@
   .offer.hot .pill { background: var(--ember); color: #fff; }
   @media (max-width: 860px) { .ba-grid, .offer-grid { grid-template-columns: 1fr; } }
 
+
+  /* ---------- Lead intake: a sheet that rises from behind the footer card's bottom edge ---------- */
+  .end { transition: min-height .6s var(--ease); min-height: 0; }
+  .end.intake-open { min-height: min(860px, 96dvh); }
+  .intake { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; max-height: 100%; overflow: auto; overscroll-behavior: contain;
+    background: #f6f5f2; color: var(--ink); border-radius: var(--r) var(--r) 0 0; padding: clamp(22px, 3vw, 44px) var(--g) clamp(22px, 3vw, 40px);
+    transform: translateY(105%); transition: transform .65s cubic-bezier(.2,.8,.2,1), box-shadow .65s; box-shadow: 0 -30px 60px rgba(0,0,0,0); }
+  .end.intake-open .intake { transform: none; box-shadow: 0 -30px 60px rgba(0,0,0,.35); }
+  .end > :not(.intake) { transition: opacity .5s, filter .5s; }
+  .end.intake-open > :not(.intake) { opacity: .25; filter: blur(3px); }
+  .intake-head { display: flex; justify-content: space-between; gap: 20px; align-items: start; margin-bottom: 22px; }
+  .intake-head h3 { margin: 8px 0 6px; font-family: var(--display); font-weight: 400; font-size: clamp(40px, 5vw, 76px); line-height: .9; }
+  .intake-sub { margin: 0; color: var(--ink-2); font-size: 15px; max-width: 52ch; }
+  .intake-x { flex: none; background: var(--ink); color: #f6f5f2; border: 0; cursor: pointer; }
+  .intake-form { display: grid; gap: 14px; max-width: 980px; }
+  .intake .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .intake .f { display: grid; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); }
+  .intake input:not([type=radio]), .intake select, .intake textarea { font: 500 16px/1.4 var(--text); color: var(--ink); background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 13px 14px; width: 100%; text-transform: none; letter-spacing: 0; }
+  .intake textarea { resize: vertical; min-height: 110px; }
+  .intake input:focus, .intake select:focus, .intake textarea:focus { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(242,84,27,.25); }
+  .intake [aria-invalid=true] { border-color: var(--ember); }
+  .need { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .need legend { width: 100%; margin-bottom: 8px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); }
+  .need label { position: relative; cursor: pointer; }
+  .need input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .need span { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--rule); background: #fff; font-size: 14px; font-weight: 600; transition: background .2s, color .2s, border-color .2s; }
+  .need input:checked + span { background: var(--ink); color: #f6f5f2; border-color: var(--ink); }
+  .need input:focus-visible + span { box-shadow: 0 0 0 3px rgba(242,84,27,.35); }
+  .intake .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .intake-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+  .intake .err { margin: 0; color: #c2410c; font-size: 14px; font-weight: 600; min-height: 1em; }
+  .intake .send { background: var(--ember); color: #fff; border: 0; cursor: pointer; }
+  .intake .send:hover { background: #d9460f; color: #fff; }
+  .intake .send[disabled] { opacity: .6; cursor: progress; }
+  .intake-done { display: grid; justify-items: start; gap: 12px; padding: 40px 0 20px; }
+  .intake-done h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(48px, 6vw, 96px); line-height: .9; }
+  .intake-done p { margin: 0; color: var(--ink-2); font-size: 17px; max-width: 46ch; }
+  .intake-done .pill { border: 0; cursor: pointer; background: var(--ink); color: #f6f5f2; }
+  button.pill { border: 0; cursor: pointer; font: inherit; }
+  .intake [hidden] { display: none !important; }
+  @media (max-width: 860px) { .intake .row { grid-template-columns: 1fr; } .end.intake-open { min-height: 100dvh; } }
+
   @media (prefers-reduced-motion: reduce) {
+    .intake, .end, .end > * { transition: none !important; }
     .figure, .figure.suited, .figure .suit, .figure.suited .suit { transition: none; }
     html { scroll-behavior: auto; }
     .badge svg.ring, .led::before, .pov-frame img, .wave b, .fire b { animation: none; }
@@ -458,7 +501,7 @@
       <li><a href="#work">Timeline</a></li>
     </ul>
     <div class="nav-r">
-      <a class="pill talk micro" href="#contact">Send me your slop <span aria-hidden="true">+</span></a>
+      <a class="pill talk micro" href="#contact" data-intake="Slop → Art">Send me your slop <span aria-hidden="true">+</span></a>
       <details class="menu">
         <summary class="circle" aria-label="Menu">
           <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 7h12M3 11h12"/></svg>
@@ -600,21 +643,21 @@
       <h3>Taste Audit</h3>
       <p>A straight teardown of your brand, product or campaign: what's working, what's slop, and exactly what to cut or change.</p>
       <ul><li>Recorded walkthrough</li><li>Marked-up deck</li><li>Priority fixes</li></ul>
-      <a class="pill light micro" href="#contact">Book an audit <span aria-hidden="true">+</span></a>
+      <a class="pill light micro" href="#contact" data-intake="Taste Audit">Book an audit <span aria-hidden="true">+</span></a>
     </article>
     <article class="offer hot">
       <span class="mono">02 · Per project</span>
       <h3>Slop → Art</h3>
       <p>Send me what you've got, AI output included. I bring it to the standard you can't quite name but know when you see it.</p>
       <ul><li>Image, video, sound, web</li><li>Built with the tools you already use</li><li>Ship-ready files</li></ul>
-      <a class="pill micro" href="#contact">Send me your slop <span aria-hidden="true">+</span></a>
+      <a class="pill micro" href="#contact" data-intake="Slop → Art">Send me your slop <span aria-hidden="true">+</span></a>
     </article>
     <article class="offer">
       <span class="mono">03 · Monthly</span>
       <h3>Tastemaster on retainer</h3>
       <p>A fractional creative director for teams building with AI. Every launch, prompt library and piece of output gets a second set of eyes.</p>
       <ul><li>Weekly reviews</li><li>Direction your team can follow</li><li>On call for launches</li></ul>
-      <a class="pill light micro" href="#contact">Talk retainer <span aria-hidden="true">+</span></a>
+      <a class="pill light micro" href="#contact" data-intake="Tastemaster on retainer">Talk retainer <span aria-hidden="true">+</span></a>
     </article>
   </div>
 </section>
@@ -623,7 +666,8 @@
   <article class="card"><span class="tag">Cisco · Intel</span><div><span class="dot" aria-hidden="true"></span><h3>Systems</h3><p>Taste for things that have to work.</p></div></article>
   <article class="card o"><span class="tag">Chozen · film</span><div><span class="dot" aria-hidden="true"></span><h3>Sound &amp; frame</h3><p><a href="#music">Put a record on ↓</a></p></div></article>
   <article class="card b"><span class="tag">Startups · AI</span><div><span class="dot" aria-hidden="true"></span><h3>Speed</h3><p>Tapp That App, Stacado, Xoomo, Flux.</p></div></article>
-  <article class="card l"><span class="tag">2011 — Now</span><div><span class="dot" aria-hidden="true"></span><h3>Brand</h3><p>Sightbox Studios: fifteen years of making things look right.</p></div>
+  <article class="card l"><span class="tag">2011 — Now</span><div><span class="dot" aria-hidden="true"></span><h3>Brand</h3><p>Sightbox Studios: fifteen years of making things look right.</p></div></article>
+</div>
 
 <section class="deck" id="music" aria-labelledby="deck-h" data-status="idle">
   <div class="deck-head">
@@ -732,7 +776,7 @@
       <h2>Got slop? <span>Send it over.</span></h2>
       <p class="handle mono">@charliehinojosa everywhere</p>
       <div class="ctas">
-        <a class="pill light micro" href="mailto:[EMAIL]">[EMAIL] <span aria-hidden="true">+</span></a>
+        <button class="pill light micro" type="button" data-intake="">Start a project <span aria-hidden="true">+</span></button>
       </div>
     </div>
     <ul>
@@ -743,6 +787,59 @@
     </ul>
   </div>
   <p class="giant" aria-hidden="true">hinojosa<span>.</span></p>
+
+  <!-- Lead intake: rises from behind the footer card's bottom edge.
+       Set data-endpoint to a form backend (Formspree, Basin, etc.) that accepts JSON POSTs;
+       until then it falls back to a pre-filled email to data-email. -->
+  <section class="intake" id="intake" role="dialog" aria-modal="false" aria-labelledby="intake-title" aria-hidden="true" inert>
+    <div class="intake-head">
+      <div>
+        <p class="mono">+ Taste, as a service</p>
+        <h3 id="intake-title">Send me your slop.</h3>
+        <p class="intake-sub">Tell me what you're making. I read every one and reply within two business days.</p>
+      </div>
+      <button class="circle intake-x" type="button" aria-label="Close the form" data-intake-close>
+        <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg>
+      </button>
+    </div>
+    <form class="intake-form" id="intake-form" data-endpoint="" data-email="[EMAIL]" novalidate>
+      <fieldset class="need">
+        <legend>What do you need?</legend>
+        <label><input type="radio" name="service" value="Taste Audit"><span>Taste Audit</span></label>
+        <label><input type="radio" name="service" value="Slop → Art"><span>Slop → Art</span></label>
+        <label><input type="radio" name="service" value="Tastemaster on retainer"><span>Retainer</span></label>
+        <label><input type="radio" name="service" value="Not sure yet" checked><span>Not sure yet</span></label>
+      </fieldset>
+      <div class="row">
+        <label class="f"><span>Name *</span><input name="name" autocomplete="name" required></label>
+        <label class="f"><span>Email *</span><input name="email" type="email" autocomplete="email" required></label>
+      </div>
+      <div class="row">
+        <label class="f"><span>Company or brand</span><input name="company" autocomplete="organization"></label>
+        <label class="f"><span>Link to your slop</span><input name="link" type="url" inputmode="url" placeholder="https://"></label>
+      </div>
+      <div class="row">
+        <label class="f"><span>Budget</span>
+          <select name="budget"><option value="">Choose one</option><option>Under $5k</option><option>$5k – $15k</option><option>$15k – $50k</option><option>$50k +</option></select>
+        </label>
+        <label class="f"><span>Timeline</span>
+          <select name="timeline"><option value="">Choose one</option><option>ASAP</option><option>This month</option><option>This quarter</option><option>Just exploring</option></select>
+        </label>
+      </div>
+      <label class="f"><span>What are you making? *</span><textarea name="message" rows="4" required placeholder="The product, the audience, what's not working yet."></textarea></label>
+      <label class="hp" aria-hidden="true">Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label>
+      <div class="intake-foot">
+        <p class="err" id="intake-err" role="alert"></p>
+        <button class="pill send micro" type="submit">Send it over <span aria-hidden="true">→</span></button>
+      </div>
+    </form>
+    <div class="intake-done" id="intake-done" hidden>
+      <span class="dot" aria-hidden="true"></span>
+      <h3>Got it.</h3>
+      <p>Your note is in. I'll come back to you within two business days, with taste.</p>
+      <button class="pill light micro" type="button" data-intake-close>Close <span aria-hidden="true">+</span></button>
+    </div>
+  </section>
 </footer>
 <div class="legal micro"><span>© Charlie Hinojosa</span><span>Where we're going, we don't need roads.</span><span>Tastemaster — Since 1999</span></div>
 
@@ -836,6 +933,51 @@
 
   /* Slop → Art sliders */
   document.querySelectorAll('.ba-range').forEach(r => r.addEventListener('input', () => r.closest('.ba').style.setProperty('--x', r.value + '%')));
+
+  /* Lead intake */
+  (() => {
+    const end = document.getElementById('contact'), sheet = document.getElementById('intake'), form = document.getElementById('intake-form');
+    const done = document.getElementById('intake-done'), err = document.getElementById('intake-err');
+    let opener = null;
+    function open(service, trigger) {
+      opener = trigger || null;
+      if (service) { const r = form.querySelector('input[name=service][value="' + service + '"]'); if (r) r.checked = true; }
+      end.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'end' });
+      end.classList.add('intake-open'); sheet.removeAttribute('inert'); sheet.setAttribute('aria-hidden', 'false');
+      setTimeout(() => (done.hidden ? form.querySelector('input[name=name]') : done.querySelector('button')).focus({ preventScroll: true }), reduce ? 0 : 450);
+      setTimeout(() => sheet.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'end' }), reduce ? 0 : 680);
+    }
+    function close() {
+      end.classList.remove('intake-open'); sheet.setAttribute('inert', ''); sheet.setAttribute('aria-hidden', 'true');
+      if (opener) opener.focus({ preventScroll: true });
+    }
+    document.addEventListener('click', e => {
+      const t = e.target.closest('[data-intake]'); if (t) { e.preventDefault(); open(t.getAttribute('data-intake'), t); return; }
+      if (e.target.closest('[data-intake-close]')) close();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && end.classList.contains('intake-open')) close(); });
+    form.addEventListener('submit', async e => {
+      e.preventDefault(); err.textContent = '';
+      const fields = ['name', 'email', 'message'].map(n => form.elements[n]); let bad = null;
+      fields.forEach(f => { const ok = f.checkValidity() && f.value.trim(); f.setAttribute('aria-invalid', ok ? 'false' : 'true'); if (!ok && !bad) bad = f; });
+      if (bad) { err.textContent = bad.name === 'email' && bad.value ? 'That email doesn\'t look right.' : 'Name, email and a few words about the project, please.'; bad.focus(); return; }
+      if (form.elements.website.value) return; // bot
+      const data = Object.fromEntries(new FormData(form)); delete data.website;
+      const endpoint = form.dataset.endpoint, btn = form.querySelector('.send');
+      btn.disabled = true;
+      try {
+        if (endpoint) {
+          const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+          if (!res.ok) throw new Error(res.status);
+        } else {
+          const body = Object.entries(data).filter(([, v]) => v).map(([k, v]) => k[0].toUpperCase() + k.slice(1) + ': ' + v).join('\n');
+          location.href = 'mailto:' + form.dataset.email + '?subject=' + encodeURIComponent('Project: ' + data.service + ' — ' + data.name) + '&body=' + encodeURIComponent(body);
+        }
+        form.hidden = true; done.hidden = false; done.querySelector('button').focus({ preventScroll: true });
+      } catch (x) { err.textContent = 'Something went wrong sending that. Please try again.'; }
+      finally { btn.disabled = false; }
+    });
+  })();
 
   /* Timeline: pin the section and drive it sideways with vertical scroll on wide screens */
   const sec = document.getElementById('work');

@@ -424,6 +424,20 @@
   .need span { display: inline-flex; align-items: center; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--rule); background: #fff; font-size: 13px; font-weight: 600; transition: background .2s, color .2s, border-color .2s; }
   .need input:checked + span { background: var(--ink); color: #f6f5f2; border-color: var(--ink); }
   .need input:focus-visible + span { box-shadow: 0 0 0 3px rgba(242,84,27,.35); }
+  /* Timeline field as a Time Circuits destination-time rack */
+  .dest-pick { border: 0; margin: 0; padding: 0; }
+  .dest-pick legend { margin-bottom: 6px; font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); }
+  .dest-rack { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 7px; border-radius: 12px; background: #161615; box-shadow: inset 0 0 0 1px rgba(255,255,255,.06); }
+  .dest-rack label { position: relative; cursor: pointer; }
+  .dest-rack input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .dest-rack .tc { --c: #6b2a22; transition: box-shadow .2s; }
+  .dest-rack .tc-d { font-size: 17px; text-shadow: none; transition: color .2s, text-shadow .2s; }
+  .dest-rack .tc-l { font-size: 7.5px; transition: background .2s; }
+  .dest-rack label:hover .tc { --c: #a83a2b; }
+  .dest-rack input:checked + .tc { --c: #ff4b33; box-shadow: inset 0 0 0 1px rgba(255,75,51,.45); }
+  .dest-rack input:checked + .tc .tc-d { text-shadow: 0 0 8px var(--c); }
+  .dest-rack input:focus-visible + .tc { box-shadow: 0 0 0 3px rgba(242,84,27,.45); }
+  @media (max-width: 860px) { .dest-rack { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dest-rack .tc-d { font-size: 15px; } }
   .intake .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   .intake-foot { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; }
   .intake .err { margin: 0; color: #c2410c; font-size: 13px; font-weight: 600; min-height: 1em; }
@@ -798,16 +812,21 @@
         </div>
         <div class="row">
           <label class="f"><span>Company or brand</span><input name="company" autocomplete="organization"></label>
-          <label class="f"><span>Link to your slop</span><input name="link" type="url" inputmode="url" placeholder="https://"></label>
-        </div>
-        <div class="row">
           <label class="f"><span>Budget</span>
             <select name="budget"><option value="">Choose one</option><option>Under $5k</option><option>$5k – $15k</option><option>$15k – $50k</option><option>$50k +</option></select>
           </label>
-          <label class="f"><span>Timeline</span>
-            <select name="timeline"><option value="">Choose one</option><option>ASAP</option><option>This month</option><option>This quarter</option><option>Just exploring</option></select>
-          </label>
         </div>
+        <label class="f"><span>Link to your slop</span><input name="link" type="url" inputmode="url" placeholder="https://"></label>
+        <!-- Timeline as a Time Circuits "destination time" picker (dates filled in by script) -->
+        <fieldset class="dest-pick">
+          <legend>Destination time</legend>
+          <div class="dest-rack">
+            <label><input type="radio" name="timeline" value="ASAP" data-when="now"><span class="tc"><span class="tc-d" data-ghost="88.88.88">--.--.--</span><span class="tc-l">ASAP</span></span></label>
+            <label><input type="radio" name="timeline" value="This month" data-when="month"><span class="tc"><span class="tc-d" data-ghost="88.88.88">--.--.--</span><span class="tc-l">This month</span></span></label>
+            <label><input type="radio" name="timeline" value="This quarter" data-when="quarter"><span class="tc"><span class="tc-d" data-ghost="88.88.88">--.--.--</span><span class="tc-l">This quarter</span></span></label>
+            <label><input type="radio" name="timeline" value="Just exploring" data-when="someday"><span class="tc"><span class="tc-d" data-ghost="88.88.88">--.--.--</span><span class="tc-l">Where we're going…</span></span></label>
+          </div>
+        </fieldset>
         <label class="f"><span>What are you making? *</span><textarea name="message" rows="4" required placeholder="The product, the audience, what's not working yet."></textarea></label>
         <label class="hp" aria-hidden="true">Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label>
         <div class="intake-foot">
@@ -943,8 +962,18 @@
     const TUCK = 56; // how far the card's bottom stays tucked behind the footer
     let opener = null;
     const fit = () => { if (anchor.classList.contains('open')) anchor.style.height = Math.max(0, sheet.offsetHeight + 30 - TUCK) + 'px'; };
+    const stamp = d => [d.getMonth() + 1, d.getDate(), d.getFullYear() % 100].map(n => String(n).padStart(2, '0')).join('.');
+    function setDates() {
+      const now = new Date(), q = Math.floor(now.getMonth() / 3);
+      const when = { now, month: new Date(now.getFullYear(), now.getMonth() + 1, 0), quarter: new Date(now.getFullYear(), q * 3 + 3, 0) };
+      form.querySelectorAll('input[name=timeline]').forEach(r => {
+        const d = when[r.dataset.when], label = r.closest('label').querySelector('.tc-l').textContent;
+        r.closest('label').querySelector('.tc-d').textContent = d ? stamp(d) : '--.--.--';
+        r.value = d ? label + ' · ' + stamp(d) : 'Just exploring';
+      });
+    }
     function open(service, trigger) {
-      opener = trigger || null;
+      opener = trigger || null; setDates();
       if (service) { const r = form.querySelector('input[name=service][value="' + service + '"]'); if (r) r.checked = true; }
       anchor.classList.add('open'); fit();
       sheet.removeAttribute('inert'); sheet.setAttribute('aria-hidden', 'false');

@@ -240,6 +240,8 @@
     });
   }
 
+  // Spotify mark, drawn as three arcs in a circle (stroke, currentColor)
+  const SPOTIFY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10.2"/><path d="M7 9.4c3.4-1 7.2-.7 10.2.9M7.6 12.6c2.8-.8 5.8-.5 8.2.8M8.2 15.6c2.2-.6 4.4-.4 6.3.6"/></svg>';
   const rows = [];
   let lastGroup = '';
   TRACKS.forEach((t, i) => {
@@ -260,6 +262,17 @@
     b.querySelector('.q-artist').textContent = t.artist + (t.release && t.release !== t.artist ? ' · ' + t.release : '');
     b.addEventListener('click', () => select(i, !!t.src));
     li.appendChild(b);
+    if (t.spotify) {
+      const a = document.createElement('a');
+      a.className = 'q-spot';
+      a.href = t.spotify;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.setAttribute('aria-label', 'Listen to ' + t.title + ' on Spotify');
+      a.title = 'Listen on Spotify';
+      a.innerHTML = SPOTIFY;
+      li.appendChild(a);
+    }
     queueEl.appendChild(li);
     rows.push(b);
   });
@@ -275,7 +288,7 @@
     bylineEl.textContent = t.artist + ' — ' + t.release;
     artEl.style.backgroundImage = 'url(' + t.cover + ')';
     const at = PLAYABLE.indexOf(S.index);
-    posEl.textContent = t.src ? 'RAÍZ samples · ' + String(at + 1).padStart(2, '0') + ' / ' + String(PLAYABLE.length).padStart(2, '0') : t.artist;
+    posEl.textContent = t.src ? t.release + ' · ' + String(at + 1).padStart(2, '0') + ' / ' + String(PLAYABLE.length).padStart(2, '0') : t.artist;
     timeEl.textContent = t.src ? fmt(S.elapsed) + ' / ' + lengthOf(t) : 'stream it on Spotify';
     playBtn.hidden = !t.src;
     playBtn.innerHTML = engaged() ? PAUSE : PLAY;
@@ -291,7 +304,7 @@
       const active = i === S.index;
       b.classList.toggle('active', active);
       if (active) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
-      b.querySelector('.q-len').textContent = r.src ? lengthOf(r) : 'Spotify ↗';
+      b.querySelector('.q-len').textContent = r.src ? lengthOf(r) : r.release;
     });
     spin();
   }

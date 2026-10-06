@@ -3,12 +3,14 @@
 //   RESEND_API_KEY  (required) Resend API key
 //   LEAD_TO         (required) where leads are delivered, e.g. you@yourdomain.com
 //   LEAD_FROM       (required) a sender on a domain verified in Resend, e.g. "Tastemaster <leads@yourdomain.com>"
-//   LEAD_AUTOREPLY  (optional) "1" to also send the lead a short confirmation
+//   LEAD_AUTOREPLY  (optional) "1" to also send the lead the "Got it." confirmation
+//   LEAD_TZ         (optional) IANA time zone for the lead email's timestamp, default UTC
+// Email templates live in ./_emails.js.
 
 const SERVICES = ['Taste Audit', 'Slop → Art', 'Tastemaster on retainer', 'Not sure yet'];
 const LIMITS = { name: 120, email: 200, company: 160, link: 500, budget: 40, timeline: 40, message: 5000 };
 
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const { leadEmail, autoReply } = require('./_emails');
 const clean = (v, max) => (typeof v === 'string' ? v.replace(/\r/g, '').trim().slice(0, max) : '');
 
 async function send(body) {
@@ -41,22 +43,12 @@ module.exports = async function handler(req, res) {
   }
   if (lead.link && !/^https?:\/\//i.test(lead.link)) lead.link = 'https://' + lead.link;
 
-  const rows = [['Service', lead.service], ['Name', lead.name], ['Email', lead.email], ['Company', lead.company],
-    ['Link', lead.link], ['Budget', lead.budget], ['Timeline', lead.timeline]].filter(([, v]) => v);
-  const html = `<div style="font-family:Helvetica,Arial,sans-serif;color:#0f0f0e;max-width:560px">
-    <p style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#f2541b;margin:0 0 8px">New Tastemaster lead</p>
-    <h1 style="font-size:24px;margin:0 0 16px">${esc(lead.name)} · ${esc(lead.service)}</h1>
-    <table style="border-collapse:collapse;font-size:14px;margin-bottom:16px">${rows.map(([k, v]) =>
-      `<tr><td style="padding:4px 16px 4px 0;color:#8d8b86">${k}</td><td style="padding:4px 0">${k === 'Link' ? `<a href="${esc(v)}">${esc(v)}</a>` : esc(v)}</td></tr>`).join('')}</table>
-    <p style="font-size:15px;line-height:1.6;white-space:pre-wrap;margin:0">${esc(lead.message)}</p></div>`;
-  const text = rows.map(([k, v]) => `${k}: ${v}`).join('\n') + `\n\n${lead.message}`;
+  const notice = leadEmail(lead);
 
   try {
-    await send({ from: LEAD_FROM, to: [LEAD_TO], reply_to: lead.email,
-      subject: `Lead: ${lead.service} — ${lead.name}${lead.company ? ` (${lead.company})` : ''}`, html, text });
+    await send({ from: LEAD_FROM, to: [LEAD_TO], reply_to: lead.email, ...notice });
     if (process.env.LEAD_AUTOREPLY === '1') {
-      await send({ from: LEAD_FROM, to: [lead.email], reply_to: LEAD_TO, subject: 'Got it. Your note is in.',
-        text: `Hi ${lead.name},\n\nThanks for sending this over. I read every one and will come back to you within two business days.\n\nCharlie Hinojosa\nTastemaster` })
+      await send({ from: LEAD_FROM, to: [lead.email], reply_to: LEAD_TO, ...autoReply(lead) })
         .catch(() => {}); // the lead itself already went through
     }
     return res.status(200).json({ ok: true });

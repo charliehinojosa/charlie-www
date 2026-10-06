@@ -86,6 +86,9 @@ Setup on Vercel (Project → Settings → Environment Variables):
 | `RESEND_API_KEY` | your Resend API key |
 | `LEAD_TO` | where leads are delivered |
 | `LEAD_FROM` | a sender on a domain verified in Resend, e.g. `Tastemaster <leads@yourdomain.com>` |
-| `LEAD_AUTOREPLY` | optional, `1` to send the lead a short "Got it" confirmation |
+| `LEAD_AUTOREPLY` | optional, `1` to send the lead the "Got it." confirmation email |
+| `LEAD_TZ` | optional, IANA time zone for the timestamp on lead emails (e.g. `America/Los_Angeles`); default UTC |
+
+Both emails are designed templates (the canvas's *Intake emails* board), built as table-based HTML with plain-text versions in `api/_emails.js`: the lead email to you (service, name, a "Destination time" strip, budget/link, their note, a Reply button) and the auto-reply to them (the share-card image, "Got it.", a recap of what they sent, links back to the site). They live in this site's code, not in Resend's template library, so nothing else on the Resend account changes.
 
 The function rejects non-POSTs, validates name/email/message, length-limits and HTML-escapes every field, and silently drops submissions that fill the hidden honeypot field. GitHub Pages can't run the function, so the site needs to be hosted on Vercel (or the function ported to Netlify/Cloudflare) for the form to deliver.

@@ -1,7 +1,24 @@
 # charlie-www
 Charlie Hinojosa Official Site
 
-## BTTF nods (current `index.html`)
+## Current site: v6, "Tastemaster" (`index.html`)
+
+*Webmaster, 1999. Tastemaster, now.* The site sells Charlie's taste as a service:
+
+- **Hero**: "Tastemaster." over the seated cutout, with the hazmat morph, fire trails, Meta-glasses POV and record sleeves described below.
+- **Taste** (`#taste`): the manifesto, with peek cards on the inline graphics.
+- **Slop → Art** (`#slop`): three drag-to-compare before/after sliders. The pairs in `assets/slop/` (`slop0-2.jpg` → `art0-2.jpg`) are labelled placeholders; replace them with real client work at the same file names.
+- **Work with me** (`#services`): three offers (Taste Audit, Slop → Art, Tastemaster on retainer). Each button opens the intake with that service preselected.
+- **Music**, **Timeline**, and the footer from v5, retitled *The making of a tastemaster*.
+- **Intake**: see *Lead intake* below. Its timeline is a Time Circuits "Destination time" picker (ASAP, This month, This quarter, "Where we're going…") that stamps a MM.DD.YY date.
+
+`tastemaster.html` redirects to `/` for old links. The previous homepage is kept as `v5.html`.
+
+### Deploy
+
+Host on Vercel (no build step; output is the repo root) so `api/lead.js` runs. Then set the Resend variables below and verify the sending domain in Resend. On GitHub Pages or any static host the page works but the form shows its "didn't go through" message.
+
+## BTTF nods
 
 Subtle Back to the Future touches, all built on the film's numbers and mechanics, not its logos:
 
@@ -9,7 +26,7 @@ Subtle Back to the Future touches, all built on the film's numbers and mechanics
 - **88 mph**: a speedometer next to the timeline hint reads scroll speed. Hit 88 and twin fire trails streak across the timeline. Typing `8` `8` anywhere jumps to the timeline at 88.
 - **10.21.15**: a marker on the timeline axis at Oct 21, 2015 (hover: "Where we're going, we don't need roads.").
 - **Footer**: that line, quietly, in the legal row.
-- **Hero**: Charlie sits on the plutonium case in Marty's white '85 Nike Bruins, re-rendered as a straight, unretouched-looking photo. He stays B&W; only the case and the red swooshes keep their color (`assets/charlie-cutout.webp`, trail `charlie-trail-v2.webp`).
+- **Hero**: Charlie sits on the plutonium case in Marty's white '85 Nike Bruins, in full colour, wearing a white low-cut tee, Marty's two-tone denim jacket (sleeves rolled to show the paisley lining) and a matte black cross chain (`assets/charlie-cutout.webp`, trail `charlie-trail-v2.webp`).
 - **Suit up**: hover the figure (the silhouette itself, alpha hit-tested; tap on touch) and he morphs into the *COMING HOME (Odyssey)* avatar: yellow radiation suit, Sony Walkman held up, the same white Nike Bruins, same pose on the same case (`assets/charlie-hazmat-cutout.webp`, same crop so the two overlay exactly). The suit drops over him head-to-toe like a costume (a soft wipe on a registered `@property` and a small settle) and lifts back off on hover-out. The avatar is registered to Charlie: hood warped onto his head (thin-plate spline), and the shoes and case below the knees are his own pixels, so nothing but the suit moves. Hovering the glasses LED keeps Charlie, so the Meta POV still works; the LED (on the frame's corner rivet) is hidden on the avatar, who has no glasses.
 - **Fire trails**: the hero's BUILDER tunnel is gone. In its place, on the same tilted floor plane, are the DeLorean's twin fire trails right after it jumps: quiet burning lines with low 3D sheets of flame (SVG-noise masks) flickering up off them. They only ignite (from under him toward the horizon) while the hazmat avatar is showing, and go out when he changes back. No animation under reduced motion.
 
@@ -30,7 +47,7 @@ Builds on v2 with interaction and real biography:
 
 - Hero wordmark now reads **CHARLIE** (the footer carries *hinojosa.*).
 - The blurred flying posters snap into focus on hover.
-- A white capture LED blinks on the corner of the Ray-Ban Meta glasses. Clicking it zooms into the lens and opens a POV dialog (`assets/pov-meta.jpg`) with a "Hey Meta, record" voice prompt and a live REC timer.
+- A white capture LED blinks on the corner of the Ray-Ban Meta glasses. Clicking it zooms into the lens and opens a POV dialog (`assets/pov-meta.jpg`) with a "Hey Meta, record" voice prompt and a live REC timer. The POV shot is Doc's lab: Doc Brown behind the camera, Einstein the sheepdog, and the DeLorean in the back.
 - The inline graphics in the Meet Charlie paragraph open detail cards on hover / keyboard focus.
 - *The Work* is now a horizontal **timeline** (1997 to now): career above the line (Cisco 1999, Intel 2008, Sightbox Studios 2011 to present), life and passion below. On desktop it pins and scrolls sideways with the page; on phones and with reduced motion it's a native swipe.
 - Socials point to @charliehinojosa.
@@ -58,7 +75,7 @@ Type: Anton (display) and Archivo (text), self-hosted in `assets/fonts` (SIL OFL
 
 Copy in `[BRACKETS]` is placeholder content that still needs filling in. Open `index.html` in a browser to view it; there's no build step.
 
-## Lead intake (Tastemaster page)
+## Lead intake
 
 "Start a project" and the offer buttons open an intake card that rises out from behind the footer's top edge. It posts JSON to `/api/lead`, a serverless function (`api/lead.js`, Vercel Node runtime) that emails the lead through [Resend](https://resend.com) with the lead's address as reply-to.
 

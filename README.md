@@ -7,7 +7,7 @@ Charlie Hinojosa Official Site
 
 - **Hero**: "Tastemaster." over the seated cutout, with the hazmat morph, fire trails, Meta-glasses POV and record sleeves described below.
 - **Taste** (`#taste`): the manifesto, with peek cards on the inline graphics.
-- **Slop → Art** (`#slop`): three drag-to-compare before/after sliders. The pairs in `assets/slop/` (`slop0-2.jpg` → `art0-2.jpg`) are labelled placeholders; replace them with real client work at the same file names.
+- **The work** (`#companies`): a logo wall for the companies that carry the work, Sightbox first as the large black tile, then Flux, Sightbox Records (links to the deck) and Beacon. Marks are typeset wordmarks until the real logo files go in: drop an SVG at `assets/logos/<name>.svg` and replace the tile's `.mark` text with `<img src=… alt=…>` (styles size it to the type). Bracketed text is placeholder copy.
 - **Work with me** (`#services`): three offers (Taste Audit, Slop → Art, Tastemaster on retainer). Each button opens the intake with that service preselected.
 - **Music**, **Timeline**, and the footer from v5, retitled *The making of a tastemaster*.
 - **Intake**: see *Lead intake* below. Its timeline is a Time Circuits "Destination time" picker (ASAP, This month, This quarter, "Where we're going…") that stamps a MM.DD.YY date.

@@ -109,7 +109,7 @@ ${lead.timeline ? `<tr><td style="padding:0 0 8px;font-family:${TEXT};font-size:
 <div style="font-family:${DISPLAY};font-size:28px;line-height:1;text-transform:uppercase;color:${INK}">Charlie Hinojosa</div>
 <div style="margin-top:6px;font-family:${TEXT};font-size:14px;color:${INK2}">Webmaster, 1999. Tastemaster, now.</div>
 </td></tr>
-<tr><td class="px" style="padding:28px 40px 36px">${pill(`${SITE}/#slop`, 'See slop become art')}&nbsp;&nbsp;${pill(`${SITE}/#music`, 'Put a record on', { outline: true })}</td></tr>
+<tr><td class="px" style="padding:28px 40px 36px">${pill(`${SITE}/#companies`, 'See the work')}&nbsp;&nbsp;${pill(`${SITE}/#music`, 'Put a record on', { outline: true })}</td></tr>
 <tr><td bgcolor="${INK}" class="px" style="background:${INK};padding:24px 40px">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>
 <td style="font-family:${TEXT};font-size:20px;font-weight:800;font-stretch:112%;letter-spacing:-.01em;color:${PAPER}">CH<span style="color:${EMBER}">©</span></td>

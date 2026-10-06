@@ -396,18 +396,25 @@
   .slop-head h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(64px, 9vw, 150px); line-height: .84; }
   .slop-head h2 .arrow { color: var(--ember); }
   .slop-head p { margin: 0 0 6px; }
-  .ba-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); }
-  .ba { position: relative; margin: 0; border-radius: var(--r); overflow: hidden; background: var(--card); aspect-ratio: 4 / 3; }
-  .ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .ba .before { clip-path: inset(0 calc(100% - var(--x)) 0 0); filter: saturate(1.15); }
-  .ba .handle { position: absolute; top: 0; bottom: 0; left: var(--x); width: 2px; margin-left: -1px; background: #f6f5f2; box-shadow: 0 0 12px rgba(0,0,0,.35); pointer-events: none; }
-  .ba .handle::after { content: "↔"; position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: #f6f5f2; color: var(--ink); display: grid; place-items: center; font-size: 16px; box-shadow: 0 4px 14px rgba(0,0,0,.25); }
-  .ba .tag { position: absolute; top: 14px; padding: 6px 10px; border-radius: 999px; background: rgba(15,15,14,.72); color: #f6f5f2; pointer-events: none; }
-  .ba .tag.l { left: 14px; } .ba .tag.r { right: 14px; background: var(--ember); }
-  .ba-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
-  .ba-range:focus-visible + figcaption { outline: 2px solid var(--ember); }
-  .ba figcaption { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; gap: 12px; padding: 40px 16px 14px; background: linear-gradient(to top, rgba(15,15,14,.78), transparent); color: #f6f5f2; font-size: 13px; pointer-events: none; }
-  .ba figcaption span { opacity: .75; }
+  .wall { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(clamp(200px, 19vw, 280px), auto); gap: clamp(12px, 1.6vw, 22px); }
+  .tile { position: relative; display: flex; flex-direction: column; gap: 14px; padding: clamp(22px, 2.4vw, 34px); border-radius: var(--r); background: #f6f5f2; border: 1px solid var(--rule); overflow: hidden; container-type: inline-size; }
+  .tile.prime { grid-row: span 2; background: var(--ink); color: #f6f5f2; border-color: var(--ink); }
+  .tile.wide { grid-column: span 2; }
+  .tile-k { color: var(--mute); }
+  .tile .mark { margin: auto 0; font-weight: 800; font-stretch: 118%; letter-spacing: -.035em; line-height: .9; font-size: clamp(34px, 24cqi, 84px); }
+  .tile .mark sup { font-size: .28em; font-weight: 600; vertical-align: super; letter-spacing: 0; color: var(--ember); }
+  .tile.prime .mark { font-size: clamp(48px, 16cqi, 150px); }
+  .tile .mark.records { font-size: clamp(30px, 16.5cqi, 64px); }
+  .tile .mark.records i { font-style: normal; font-weight: 400; font-stretch: 100%; color: var(--mute); }
+  .tile .mark.beacon { font-stretch: 125%; letter-spacing: .02em; text-transform: uppercase; font-size: clamp(30px, 11cqi, 72px); }
+  .tile .mark img { display: block; height: 1em; width: auto; }
+  .tile p { margin: 0; max-width: 34ch; font-size: 15px; line-height: 1.5; font-weight: 500; color: var(--ink-2); }
+  .tile.prime p { color: #b9b7b1; font-size: 17px; }
+  .tile-f { margin-top: 4px; color: var(--ink); text-decoration: none; }
+  .tile.prime .tile-f { color: #f6f5f2; }
+  a.tile-f:hover { color: var(--ember); }
+  .tile::after { content: ""; position: absolute; top: clamp(22px, 2.4vw, 34px); right: clamp(22px, 2.4vw, 34px); width: 8px; height: 8px; border-radius: 50%; background: var(--rule); }
+  .tile.prime::after { background: var(--ember); box-shadow: 0 0 12px rgba(242,84,27,.6); }
   .offers { padding-top: 0; }
   .offer-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 22px); }
   .offer { display: flex; flex-direction: column; gap: 16px; padding: clamp(22px, 2.4vw, 34px); border-radius: var(--r); background: #f6f5f2; border: 1px solid var(--rule); }
@@ -421,7 +428,10 @@
   .offer.hot { background: var(--ink); color: #f6f5f2; border-color: var(--ink); }
   .offer.hot p { color: #b9b7b1; }
   .offer.hot .pill { background: var(--ember); color: #fff; }
-  @media (max-width: 860px) { .ba-grid, .offer-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 860px) { .offer-grid { grid-template-columns: 1fr; }
+    .wall { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(180px, auto); }
+    .tile.prime { grid-column: span 2; grid-row: auto; min-height: 300px; } }
+  @media (max-width: 560px) { .wall { grid-template-columns: 1fr; } .tile.prime, .tile.wide { grid-column: auto; } }
 
 
   /* ---------- Lead intake: a card tucked behind the footer that rises out from behind its top edge ---------- */
@@ -535,7 +545,7 @@
     <ul class="links">
       <li><a href="#top" aria-current="page">Home</a></li>
       <li><a href="#taste">Taste</a></li>
-      <li><a href="#slop">Slop → Art</a></li>
+      <li><a href="#companies">Companies</a></li>
       <li><a href="#services">Work with me</a></li>
       <li><a href="#music">Music</a></li>
       <li><a href="#work">Timeline</a></li>
@@ -548,7 +558,7 @@
         </summary>
         <ul>
           <li><a href="#taste">Taste</a></li>
-          <li><a href="#slop">Slop → Art</a></li>
+          <li><a href="#companies">Companies</a></li>
           <li><a href="#services">Work with me</a></li>
           <li><a href="#music">Music</a></li>
           <li><a href="#work">Timeline</a></li>
@@ -586,7 +596,7 @@
 
   <div class="intro">
     <h2>Tastemaster.<br><span class="mute">Webmaster, 1999. Tastemaster, now.</span></h2>
-    <a class="pill light" href="#slop"><span class="thumb" aria-hidden="true"></span>See slop become art</a>
+    <a class="pill light" href="#companies"><span class="thumb" aria-hidden="true"></span>See the work</a>
     <div class="socials">
       <a class="circle" href="https://instagram.com/charliehinojosa" target="_blank" rel="noopener" aria-label="Instagram, @charliehinojosa">IG</a>
       <a class="circle" href="https://www.linkedin.com/in/charliehinojosa" target="_blank" rel="noopener" aria-label="LinkedIn, charliehinojosa">in</a>
@@ -634,42 +644,40 @@
         <button class="peek" type="button"><span class="barcode" aria-hidden="true"></span><span class="pop" role="tooltip"><img src="assets/builder-cover-bw.jpg" alt=""><span class="when">2026</span><span class="what">Flux Intelligence Group</span><span class="why">Building with AI every day: image, video, sound, code.</span></span></button>,
         and the internet is filling with slop.</span> What's scarce is taste.</p>
       <p class="body">Creativity is subjective. Taste is a point of view you can be held to: knowing what's good, what's off, and what to cut. Twenty-seven years across tech, music, film, brand and startups built mine. I know the tools, so I can make almost anything, or take what you've made and turn it into a work of art.</p>
-      <a class="pill micro" href="#slop">See the difference <span aria-hidden="true">+</span></a>
+      <a class="pill micro" href="#companies">See the work <span aria-hidden="true">+</span></a>
     </div>
   </div>
 </section>
 
-<section class="slop" id="slop">
+<section class="brands" id="companies" aria-labelledby="brands-h">
   <div class="slop-head">
-    <h2>SLOP <span class="arrow" aria-hidden="true">→</span> ART</h2>
-    <p class="mono">+ Drag each slider · placeholder pairs until the real work goes in</p>
+    <h2 id="brands-h">THE WORK</h2>
+    <p class="mono">+ Shown where it ships: the companies I run</p>
   </div>
-  <div class="ba-grid">
-    <figure class="ba" style="--x: 50%">
-      <img class="after" src="assets/slop/art0.jpg" alt="After: a minimal matte NORTH cold-brew can on stone in soft morning light.">
-      <img class="before" src="assets/slop/slop0.jpg" alt="Before: a cluttered, oversaturated AI ad for the same cold brew.">
-      <span class="tag l mono">Slop</span><span class="tag r mono">Art</span>
-      <span class="handle" aria-hidden="true"></span>
-      <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Compare before and after: NORTH cold brew">
-      <figcaption><b>NORTH cold brew</b><span>Campaign · cut the noise, kept the morning</span></figcaption>
-    </figure>
-    <figure class="ba" style="--x: 50%">
-      <img class="after" src="assets/slop/art1.jpg" alt="After: a quiet film photo of a figure at the edge of a grey tide, LOW TIDE in small type.">
-      <img class="before" src="assets/slop/slop1.jpg" alt="Before: a neon fantasy AI album cover for LOW TIDE.">
-      <span class="tag l mono">Slop</span><span class="tag r mono">Art</span>
-      <span class="handle" aria-hidden="true"></span>
-      <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Compare before and after: LOW TIDE album cover">
-      <figcaption><b>LOW TIDE</b><span>Album cover · one figure, one feeling</span></figcaption>
-    </figure>
-    <figure class="ba" style="--x: 50%">
-      <img class="after" src="assets/slop/art2.jpg" alt="After: a restrained BLUE HOUR jazz poster.">
-      <img class="before" src="assets/slop/slop2.jpg" alt="Before: a cluttered neon AI jazz-night poster.">
-      <span class="tag l mono">Slop</span><span class="tag r mono">Art</span>
-      <span class="handle" aria-hidden="true"></span>
-      <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Compare before and after: BLUE HOUR poster">
-      <figcaption><b>BLUE HOUR</b><span>Event poster · from shouting to swing</span></figcaption>
-    </figure>
-  </div>
+  <ul class="wall">
+    <li class="tile prime">
+      <span class="tile-k mono">Founder · 2011 — now</span>
+      <span class="mark sightbox" data-logo="sightbox">Sightbox<sup>®</sup></span>
+      <p>The studio. Fifteen years of brand, film, product and sound, made to look right.</p>
+      <span class="tile-f mono">[SIGHTBOX URL]</span>
+    </li>
+    <li class="tile">
+      <span class="tile-k mono">2026 — now</span>
+      <span class="mark flux" data-logo="flux">Flux</span>
+      <p>Flux Intelligence Group. Building with AI every day: image, video, sound, code.</p>
+    </li>
+    <li class="tile">
+      <span class="tile-k mono">Label</span>
+      <span class="mark records" data-logo="sightbox-records">Sightbox <i>Records</i></span>
+      <p>RAÍZ, <em>Scored, Vol. 1</em>, <em>COMING HOME (Odyssey)</em>.</p>
+      <a class="tile-f mono" href="#music">Put a record on ↓</a>
+    </li>
+    <li class="tile wide">
+      <span class="tile-k mono">[BEACON ROLE · YEAR]</span>
+      <span class="mark beacon" data-logo="beacon">Beacon</span>
+      <p>[WHAT BEACON DOES, ONE LINE]</p>
+    </li>
+  </ul>
 </section>
 
 <section class="offers" id="services">
@@ -978,9 +986,6 @@
     const r = fig.getBoundingClientRect();
     if (overBody(r, e.clientX, e.clientY)) setSuited(!fig.classList.contains('suited'), r, e.clientX, e.clientY);
   });
-
-  /* Slop → Art sliders */
-  document.querySelectorAll('.ba-range').forEach(r => r.addEventListener('input', () => r.closest('.ba').style.setProperty('--x', r.value + '%')));
 
   /* Lead intake: the card rises out from behind the footer's top edge; the anchor grows so the page makes room */
   (() => {

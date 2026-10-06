@@ -17,10 +17,10 @@
   const WORKLET_URL = 'assets/turntable-worklet.js';
 
   const TRACKS = [
-    { id: 'scored', group: 'by', title: 'Scored, Vol. 1', artist: 'Charlie Hinojosa', release: 'LP', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/album/2M6IxJFfhFzBNcOWFb7OBa' },
     { id: 'severance', group: 'by', title: 'Severance', artist: 'Charlie Hinojosa', release: 'Scored, Vol. 1', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/track/2V227pEduiElekgPuE15Bu' },
     { id: 'bonsai', group: 'by', title: 'Bonsai', artist: 'Charlie Hinojosa', release: 'Scored, Vol. 1', kind: 'Track', cover: 'assets/covers/scored-vol-1.jpg', spotify: 'https://open.spotify.com/track/6E3EIlCVg7MGhcC5oA4wmg' },
     { id: 'coming-home', group: 'by', title: 'COMING HOME (Odyssey)', artist: 'Charlie Hinojosa', release: 'LP', cover: 'assets/covers/coming-home-odyssey.jpg', spotify: 'https://open.spotify.com/album/0CLIK7VrYwqFsamlTW4KoW' },
+    { id: 'coming-home-single', group: 'by', title: 'Coming Home', artist: 'Charlie Hinojosa', release: 'Single', kind: 'Single', cover: 'assets/covers/coming-home-odyssey.jpg', spotify: 'https://open.spotify.com/track/0oPoubTunneaMpvF0QgenW' },
     { id: 't1', group: 'raiz', title: 'Vivo', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:29', src: 'assets/audio/raiz-vivo-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
     { id: 't2', group: 'raiz', title: 'Ama', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:30', src: 'assets/audio/raiz-ama-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },
     { id: 't3', group: 'raiz', title: 'Montaña', artist: 'RAÍZ', release: 'RAÍZ', cover: 'assets/covers/raiz.jpg', length: '0:25', src: 'assets/audio/raiz-montana-radio.mp3', spotify: 'https://open.spotify.com/album/6lm4CHNWQsehPuMMojewMa' },

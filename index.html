@@ -993,17 +993,19 @@
     fig.classList.toggle('suited', on);
     hero.classList.toggle('suited', on);
   }
+  // Hover (mouse only). Touch and pen fire pointerleave right after every tap, so they must not reach these.
   hero.addEventListener('pointermove', e => {
-    if (e.pointerType === 'touch') return;
+    if (e.pointerType !== 'mouse') return;
     const r = fig.getBoundingClientRect();
     const on = overBody(r, e.clientX, e.clientY) && !led.contains(e.target);
     clearTimeout(suitTimer);
     if (on) suitTimer = setTimeout(() => setSuited(true, r, e.clientX, e.clientY), 120);
     else setSuited(false, r, e.clientX, e.clientY);
   });
-  hero.addEventListener('pointerleave', () => { clearTimeout(suitTimer); setSuited(false); });
+  hero.addEventListener('pointerleave', e => { if (e.pointerType !== 'mouse') return; clearTimeout(suitTimer); setSuited(false); });
+  // Tap (touch or pen): toggle the suit on the silhouette
   hero.addEventListener('pointerup', e => {
-    if (e.pointerType !== 'touch' || led.contains(e.target)) return;
+    if (e.pointerType === 'mouse' || led.contains(e.target)) return;
     const r = fig.getBoundingClientRect();
     if (overBody(r, e.clientX, e.clientY)) setSuited(!fig.classList.contains('suited'), r, e.clientX, e.clientY);
   });

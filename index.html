@@ -233,7 +233,9 @@
   .peek:focus-visible { outline: 2px solid var(--ember); outline-offset: 4px; border-radius: 999px; }
   .pop { position: absolute; z-index: 20; left: 50%; bottom: calc(100% + 14px); width: 280px; padding: 10px; border-radius: 20px; background: #f6f5f2; color: var(--ink); box-shadow: 0 30px 60px -20px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.05); text-align: left; letter-spacing: 0;
     opacity: 0; visibility: hidden; transform: translate(-50%, 10px) scale(.96); transform-origin: 50% 100%; transition: opacity .25s, transform .3s var(--ease), visibility 0s .3s; }
-  .peek:hover .pop, .peek:focus-visible .pop, .peek:focus-within .pop { opacity: 1; visibility: visible; transform: translate(-50%, 0) scale(1); transition: opacity .25s, transform .3s var(--ease); }
+  /* Shown on mouse hover, keyboard focus, or .open (a tap on touch screens; see the tap-to-open script) */
+  .peek:focus-visible .pop, .peek.open .pop { opacity: 1; visibility: visible; transform: translate(calc(-50% + var(--nudge, 0px)), 0) scale(1); transition: opacity .25s, transform .3s var(--ease); }
+  @media (hover: hover) { .peek:hover .pop { opacity: 1; visibility: visible; transform: translate(-50%, 0) scale(1); transition: opacity .25s, transform .3s var(--ease); } }
   .pop img { width: 100%; height: 150px; object-fit: cover; border-radius: 12px; }
   .pop .when { display: block; margin: 12px 6px 2px; font-family: var(--display); font-size: 24px; line-height: 1; }
   .pop .what { display: block; margin: 0 6px 4px; font-size: 15px; font-weight: 600; line-height: 1.3; }
@@ -345,7 +347,9 @@
   .job { cursor: help; }
   .tl .pop { left: -20px; width: 260px; transform: translate(0, 10px) scale(.96); transform-origin: 20px 100%; }
   .tl .job .pop { left: 14px; top: calc(100% + 14px); bottom: auto; transform-origin: 20px 0; transform: translate(0, -10px) scale(.96); }
-  .life div:hover .pop, .life div:focus-within .pop, .job:hover .pop { opacity: 1; visibility: visible; transform: none; transition: opacity .25s, transform .3s var(--ease); }
+  .life div:focus-visible .pop, .life div.open .pop, .job.open .pop { opacity: 1; visibility: visible; transform: translate(var(--nudge, 0px), 0); transition: opacity .25s, transform .3s var(--ease); }
+  @media (hover: none) { .peek, .life div[tabindex], .job { cursor: pointer; -webkit-tap-highlight-color: transparent; } }
+  @media (hover: hover) { .life div:hover .pop, .job:hover .pop { opacity: 1; visibility: visible; transform: none; transition: opacity .25s, transform .3s var(--ease); } }
   .tl .pop .what { font-family: var(--text); }
   .ph { display: grid; place-items: center; height: 150px; border-radius: 12px; color: var(--mute); font-size: 11px; background: repeating-linear-gradient(-45deg, #e7e6e2 0 10px, #efeeea 10px 20px); box-shadow: inset 0 0 0 1px var(--rule); }
   .job .pop .when, .job .pop .what { color: var(--ink); }
@@ -1003,6 +1007,39 @@
     const r = fig.getBoundingClientRect();
     if (overBody(r, e.clientX, e.clientY)) setSuited(!fig.classList.contains('suited'), r, e.clientX, e.clientY);
   });
+
+  /* Touch screens have no hover: a tap opens a hover card (manifesto peeks, timeline entries),
+     a second tap or a tap anywhere else closes it, one card at a time. Mouse hover is unchanged. */
+  (() => {
+    const SEL = '.peek, .life > div, .job';
+    let touch = false, openEl = null;
+    const close = () => { if (!openEl) return; openEl.classList.remove('open'); openEl.blur(); openEl = null; };
+    const nudge = el => {   // keep the card inside the screen
+      const pop = el.querySelector('.pop'); if (!pop) return;
+      pop.style.setProperty('--nudge', '0px');
+      setTimeout(() => {   // measure once the open transition has settled
+        if (openEl !== el) return;
+        const r = pop.getBoundingClientRect(), pad = 10;
+        const d = r.left < pad ? pad - r.left : r.right > innerWidth - pad ? innerWidth - pad - r.right : 0;
+        pop.style.setProperty('--nudge', Math.round(d) + 'px');
+        // and on the page: scroll just enough to show a card that opens off-screen (not in the pinned timeline, which scrolls sideways)
+        if (!el.closest('.tl.pinned')) {
+          const dy = r.top < pad ? r.top - pad : r.bottom > innerHeight - pad ? r.bottom - innerHeight + pad : 0;
+          if (dy) scrollBy({ top: dy, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        }
+      }, 320);
+    };
+    document.addEventListener('pointerdown', e => { touch = e.pointerType !== 'mouse'; }, true);
+    document.addEventListener('click', e => {
+      if (!touch) return;
+      const el = e.target.closest(SEL);
+      if (el && el === openEl) { close(); return; }
+      close();
+      if (el) { el.classList.add('open'); openEl = el; nudge(el); }
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+    document.getElementById('tl-pin')?.addEventListener('scroll', close, { passive: true });
+  })();
 
   /* Lead intake: the card rises out from behind the footer's top edge; the anchor grows so the page makes room */
   (() => {
